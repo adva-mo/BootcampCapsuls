@@ -7,6 +7,7 @@ async function fetchData(url) {
   try {
     const response = await fetch(url);
     const data = await response.json();
+    // console.log(data);
     return data;
   } catch (e) {
     console.log(e);
@@ -43,17 +44,46 @@ async function transformData(data) {
   }
 }
 
-//? -------------------API starts here!------------------
-getAllGroupMembers();
+//! -------------------APP starts here!------------------
+// getAllGroupMembers();
 
-//? functions for tests-------------------
+//! functions for tests-------------------
 
-//? wheather api tests-------------------
+//! -------------------wheather api functions - tested !-------------------
 
-// veified api to get weather by lon and lat coordinates: `https://api.openweathermap.org/data/2.5/weather?lat={lat}}&lon={lon}&appid=${wheatherApiKey}`
-//! TODO : convert city to coordinates;
+async function getCityCoordinates(cityName) {
+  try {
+    const cityData = await fetchData(
+      `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=${app.wheatherApiKey}`
+    );
+    const lat = cityData[0].lat.toFixed(2);
+    const lon = cityData[0].lon.toFixed(2);
+    await getCityWeather(lat, lon);
+  } catch {
+    console.log(e);
+  }
+}
 
-//? local storage tests-------------------
+async function getCityWeather(lat, lon) {
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${app.wheatherApiKey}`
+    );
+    if (!res.ok) {
+      return;
+    }
+    const cityWeather = await res.json();
+    console.log(cityWeather.main);
+  } catch {
+    console.log(e);
+  }
+}
+getCityCoordinates("mexico-city");
+
+//! -------------------local storage functuons -  tested !-------------------
+//? TODO
+//? add a function: addDataToLocalStorage(), will recieve an object, iterate it and store it to local storage
+//? before adding, make sure if the key is already exist, if not, creat a new key, if its is, update the key,
 
 // function that detects whether localStorage is both supported and available:
 function storageAvailable(type) {
@@ -84,14 +114,11 @@ function storageAvailable(type) {
   }
 }
 
-//! add a function: addDataToLocalStorage(), will recieve an object, iterate it and store it to local storage
-//! before addind, make sure if the key is already exist, if not, creat a new key, if its is, update the key,
 //use of the function:
 function ifLocalStorageAvailable() {
   if (storageAvailable("localStorage")) {
     app.localStorageAvailable = true;
     // Yippee! We can use localStorage awesomeness
-    console.log("item added to local storage");
   } else {
     console.log("item didnt add to local storage!!");
     // Too bad, no localStorage for us

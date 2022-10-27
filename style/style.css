@@ -1,0 +1,15 @@
+body {
+  width: 100vw;
+  padding-top: 2rem;
+}
+.landing-page {
+  background-color: aquamarine;
+  width: 90vw;
+  height: 90vh;
+  display: none;
+}
+.the-class {
+  background-color: rgb(27, 99, 75);
+  width: 90vw;
+  height: 90vh;
+}

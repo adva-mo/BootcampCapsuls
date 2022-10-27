@@ -4,8 +4,43 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Mordi's class room</title>
+    <!-- links  -->
+    <link rel="stylesheet" href="/style/utils.css" />
+    <link rel="stylesheet" href="/style/style.css" />
   </head>
-  <body></body>
-  <script src="/app.js"></script>
+  <body class="flex">
+    <div class="main-container">
+      <div class="landing-page">
+        <h1>Mordi's class room</h1>
+        <button id="enter-class" class="enter-class">enter!</button>
+      </div>
+      <div class="the-class">
+        <header class="header-container flex">
+          <input
+            type="text"
+            name="serach"
+            id="serach"
+            class="search"
+            placeholder="Search here.."
+          />
+          <h1>STUDENT BY</h1>
+          <select name="search-prop" id="search-prop" class="search">
+            <option value="Name">Name</option>
+            <option value="Last name">Last name</option>
+            <option value="Capsule">Capsule</option>
+            <option value="age">age</option>
+            <option value="City">City</option>
+            <option value="Gender">Gender</option>
+            <option value="Hobby">Hobby</option>
+            <option value="ID">ID</option>
+          </select>
+        </header>
+        <div class="table">
+          <div class="properties"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="/modules/app.js"></script>
 </html>
