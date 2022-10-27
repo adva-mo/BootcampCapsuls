@@ -1,37 +1,64 @@
 // Api of specific student:
 // https://capsules7.herokuapp.com/api/user/:id
-// {"id":"021","gender":"female","firstName":"אדוה","lastName":"מוזס","hobby":"גלישה","age":31,"city":"פתח תקווה","capsule":4}
 
 // Api of each group:
 // can be: one / two
-// https://capsules7.herokuapp.com/api/group/:number (edited)
-// number ="one"
-// [
-//   { id: "011", firstName: "מירי", lastName: "פורמן" },
-//   { id: "012", firstName: "מיכאל", lastName: "קונין" },
-//   { id: "013", firstName: "מוחמד", lastName: "נאטשה" },
-//   { id: "014", firstName: "מאיר", lastName: "יוסף כהן" },
-//   { id: "015", firstName: "לידור", lastName: "אשוש" },
-//   { id: "016", firstName: "יעל", lastName: "לניר" },
-//   { id: "017", firstName: "יוסף", lastName: "פדול" },
-//   { id: "018", firstName: "בן", lastName: "גרינולד" },
-//   { id: "019", firstName: "באשיר", lastName: "טאריף" },
-//   { id: "020", firstName: "אראל", lastName: "חגאג" },
-//   { id: "021", firstName: "אדוה", lastName: "מוזס" },
-// ];
+// https://capsules7.herokuapp.com/api/group/:number
+
+const app = {
+  wheatherApiKey: "72f1e697d6e7311ea64d8c29f3c8330f",
+  isLocalStorage: false,
+};
 
 async function fetchData(url) {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (e) {
     console.log(e);
   }
 }
 
-// fetchData("https://capsules7.herokuapp.com/api/user/001");
+async function getAllGroupMembers() {
+  try {
+    const group1 = fetchData("https://capsules7.herokuapp.com/api/group/one");
+    const group2 = fetchData("https://capsules7.herokuapp.com/api/group/two");
+    const myPromises = [group1, group2];
+    const data = await Promise.all(myPromises);
+    await transformData(data);
+  } catch {
+    console.log("group members are not available");
+  }
+}
+
+async function transformData(data) {
+  try {
+    const members = [...data[0], ...data[1]];
+    const myPromises = [];
+    for (let member of members) {
+      const ID = member.id;
+      const fullMember = fetchData(
+        `https://capsules7.herokuapp.com/api/user/${ID}`
+      );
+      myPromises.push(fullMember);
+    }
+    const results = await Promise.all(myPromises);
+    console.log(results);
+  } catch {
+    console.log(e);
+  }
+}
+
+//? -------------------API starts here!------------------
+getAllGroupMembers();
+
+//? functions for tests-------------------
+
+//? wheather api tests-------------------
+
+// veified api to get weather by lon and lat coordinates: `https://api.openweathermap.org/data/2.5/weather?lat={lat}}&lon={lon}&appid=${wheatherApiKey}`
+//! TODO : convert city to coordinates;
 
 //? local storage tests-------------------
 
@@ -63,11 +90,13 @@ function storageAvailable(type) {
     );
   }
 }
+
 //! add a function: addDataToLocalStorage(), will recieve an object, iterate it and store it to local storage
 //! before addind, make sure if the key is already exist, if not, creat a new key, if its is, update the key,
 //use of the function:
 function ifLocalStorageAvailable() {
   if (storageAvailable("localStorage")) {
+    app.isLocalStorage = true;
     // Yippee! We can use localStorage awesomeness
     console.log("item added to local storage");
   } else {
