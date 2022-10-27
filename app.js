@@ -1,13 +1,6 @@
-// Api of specific student:
-// https://capsules7.herokuapp.com/api/user/:id
-
-// Api of each group:
-// can be: one / two
-// https://capsules7.herokuapp.com/api/group/:number
-
 const app = {
   wheatherApiKey: "72f1e697d6e7311ea64d8c29f3c8330f",
-  isLocalStorage: false,
+  localStorageAvailable: false,
 };
 
 async function fetchData(url) {
@@ -96,7 +89,7 @@ function storageAvailable(type) {
 //use of the function:
 function ifLocalStorageAvailable() {
   if (storageAvailable("localStorage")) {
-    app.isLocalStorage = true;
+    app.localStorageAvailable = true;
     // Yippee! We can use localStorage awesomeness
     console.log("item added to local storage");
   } else {
