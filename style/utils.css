@@ -2,6 +2,13 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  --primary-color: #fab32aff;
+  --olive: #798b40ff;
+  --nice-w: #fbf1e8ff;
+  --gray-web: #838281ff;
+  --davys-grey: #4b4a4aff;
+  color: var(--davys-grey);
+  font-size: 0.95rem;
 }
 .flex {
   display: flex;
@@ -19,28 +26,35 @@
 }
 .table-row {
   width: 100%;
-  background-color: brown;
+  /* background-color: brown; */
   height: 2rem;
   display: flex;
 }
 .table-cell {
-  background-color: rgb(28, 131, 98);
-  border: 1px solid black;
+  background-color: var(--nice-w);
+  border: var(--olive) solid 1px;
+  border-width: 1px 1px 0 1px;
   width: 2rem;
   height: 3rem;
   flex-grow: 1;
   text-align: center;
 }
 button {
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  border: var(--gray-web) solid 0.5px;
+  flex-grow: 1;
 }
 .delete-student {
-  background-color: red;
+  background-color: var(--primary-color);
 }
 .edit-student {
-  background-color: rgb(37, 208, 211);
+  background-color: var(--olive);
 }
 .hidden {
   display: none;
+}
+.primary-border {
+  outline: var(--olive) solid 5px;
 }

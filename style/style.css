@@ -1,24 +1,31 @@
 body {
   width: 100vw;
   padding-top: 2rem;
+  background: url(/photos/beer-bg.jpeg);
+  height: 100%;
 }
 .landing-page {
   background-color: aquamarine;
   width: 90vw;
   height: 90vh;
   display: none;
+  border-radius: 10%;
+}
+.main-container {
+  border-radius: 10%;
+  height: 120%;
 }
 .the-class {
-  background-color: rgb(27, 99, 75);
-  width: 90vw;
-  height: 90vh;
-  /* display: none; */
+  height: 120%;
+  border-radius: 10%;
+  background-color: var(--nice-w);
+  width: 95vw;
 }
 .search:focus {
   border: none;
 }
 .table-container {
-  background-color: rgb(245, 240, 255);
+  background-color: var(--nice-w);
   width: 100%;
-  height: 90%;
+  border-radius: 10%;
 }

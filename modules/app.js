@@ -126,8 +126,10 @@ function displayRow(row, rowsCounter, member) {
 function insertEditButtons(cell) {
   const deleteStudent = document.createElement("button");
   deleteStudent.classList.add("delete-student");
+  deleteStudent.innerHTML = "<i class=`fa-solid fa-trash-can`></i>";
   const editStudent = document.createElement("button");
   editStudent.classList.add("edit-student");
+  deleteStudent.innerHTML = "<i class=`fa-solid fa-trash-can`></i>";
   cell.appendChild(deleteStudent);
   cell.appendChild(editStudent);
 }
