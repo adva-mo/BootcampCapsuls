@@ -6,11 +6,13 @@ const app = {
   tablePropeties: [
     "gitStudentName",
     "id",
-    "Name",
-    "Last Name",
-    "City",
-    "Gender",
-    "Hobby",
+    "firstName",
+    "lastName",
+    "capsule",
+    "age",
+    "city",
+    "gender",
+    "hobby",
     "edit",
   ],
 };
@@ -35,7 +37,11 @@ async function getAllGroupMembers() {
     const group2 = fetchData("https://capsules7.herokuapp.com/api/group/two");
     const myPromises = [group1, group2];
     const data = await Promise.all(myPromises);
-    await transformData(data);
+    // console.log(data);
+    const results = await transformData(data);
+    await addGitData(results);
+    // console.log("got all group members", results);
+    return results;
   } catch {
     console.log("group members are not available");
   }
@@ -53,47 +59,74 @@ async function transformData(data) {
       myPromises.push(fullMember);
     }
     const results = await Promise.all(myPromises);
-    console.log(results);
+    // console.log(results);
+    return results;
   } catch {
     console.log(e);
   }
 }
 
+async function addGitData(results) {
+  try {
+    const res = results;
+    return results.map((e) => {
+      e.gitStudentName = "1";
+      // console.log(e.gitStudentName);
+    });
+  } catch {
+    console.log("eroor");
+  }
+}
 //! -------------------draw table functions------------------
 
-function drawPropRaw() {
-  const propRaw = document.createElement("div");
-  propRaw.classList.add("table-row");
-  table.appendChild(propRaw);
-  insert9divsToRow(propRaw, rowsCounter);
+function createRow(member) {
+  const row = document.createElement("div");
+  row.classList.add("table-row");
+  table.appendChild(row);
+  displayRow(row, rowsCounter, member);
   rowsCounter++;
 }
 
-function insert9divsToRow(propRaw, rowsCounter) {
+function displayRow(row, rowsCounter, member) {
   let cellCounter = 0;
   for (let prop of app.tablePropeties) {
     let newCell = document.createElement("div");
-    newCell.classList.add("table-cell", "flex");
+    newCell.classList.add("table-cell");
     newCell.setAttribute("id", `${prop}`);
     if (rowsCounter === 0) {
-      if (cellCounter === 0 || cellCounter === 7) {
+      if (cellCounter === 0 || cellCounter === 9) {
         newCell.textContent = "";
       } else {
         newCell.textContent = `${prop}`;
       }
+    } else {
+      newCell.setAttribute("data-value", `${prop}`);
+      newCell.textContent = member[prop];
+      console.log(member);
     }
     cellCounter++;
-    propRaw.appendChild(newCell);
+    row.appendChild(newCell);
   }
 }
 
-drawPropRaw();
-drawPropRaw();
+//! -------------------!------------------
 
 //! -------------------APP starts here!------------------
-// getAllGroupMembers();
 
-//! functions for tests-------------------
+async function mainApp() {
+  createRow();
+  try {
+    const classObj = await getAllGroupMembers();
+    //console.log(classObj);
+    classObj.forEach((member, i) => {
+      createRow(member);
+    });
+  } catch {
+    console.log("error");
+  }
+  console.log("APP DONE SUCCESFULLY");
+}
+mainApp();
 
 //! -------------------wheather api functions - tested !-------------------
 

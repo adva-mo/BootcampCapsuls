@@ -20,7 +20,7 @@
 .table-row {
   width: 100%;
   background-color: brown;
-  height: 3rem;
+  height: 2rem;
   display: flex;
 }
 .table-cell {
@@ -29,7 +29,5 @@
   width: 2rem;
   height: 3rem;
   flex-grow: 1;
-  /* text-align: center; */
-  /* justify-content: center; */
-  align-items: center;
+  text-align: center;
 }
