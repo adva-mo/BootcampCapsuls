@@ -31,3 +31,13 @@
   flex-grow: 1;
   text-align: center;
 }
+button {
+  width: 2rem;
+  height: 2rem;
+}
+.delete-student {
+  background-color: red;
+}
+.edit-student {
+  background-color: rgb(37, 208, 211);
+}

@@ -13,7 +13,7 @@ const app = {
     "city",
     "gender",
     "hobby",
-    "edit",
+    "",
   ],
 };
 var rowsCounter = 0;
@@ -94,19 +94,35 @@ function displayRow(row, rowsCounter, member) {
     newCell.classList.add("table-cell");
     newCell.setAttribute("id", `${prop}`);
     if (rowsCounter === 0) {
-      if (cellCounter === 0 || cellCounter === 9) {
+      if (cellCounter === 0) {
         newCell.textContent = "";
+      } else if (cellCounter === 9) {
+        newCell.textContent = `${prop}`;
       } else {
         newCell.textContent = `${prop}`;
       }
     } else {
-      newCell.setAttribute("data-value", `${prop}`);
-      newCell.textContent = member[prop];
-      console.log(member);
+      if (cellCounter === 9) {
+        //insert buttons
+        insertEditButtons(newCell);
+      } else {
+        newCell.setAttribute("data-value", `${prop}`);
+        newCell.textContent = member[prop];
+        console.log(member);
+      }
     }
     cellCounter++;
     row.appendChild(newCell);
   }
+}
+
+function insertEditButtons(cell) {
+  const deleteStudent = document.createElement("button");
+  deleteStudent.classList.add("delete-student");
+  const editStudent = document.createElement("button");
+  editStudent.classList.add("edit-student");
+  cell.appendChild(deleteStudent);
+  cell.appendChild(editStudent);
 }
 
 //! -------------------!------------------
