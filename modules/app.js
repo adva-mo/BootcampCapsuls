@@ -154,7 +154,7 @@ function insertEditButtons(cell) {
 
 //! -------------------event listeners functions------------------
 
-function addEventsToEditMemberSection() {
+function addEventsToButtons() {
   const deleteButtons = document.querySelectorAll(".delete-student");
   const editButtons = document.querySelectorAll(".edit-student");
 
@@ -167,7 +167,12 @@ function addEventsToEditMemberSection() {
 }
 
 function deleteStudent(e) {
-  console.log("clocked on delete");
+  const studentToRemove = e.path[2];
+  if (
+    confirm("Are you sure you want to delete student? all data will be lost")
+  ) {
+    studentToRemove.classList.add("hidden");
+  }
 }
 
 function editStudent(e) {
@@ -231,7 +236,7 @@ async function displayData() {
   } catch {
     console.log("error");
   }
-  addEventsToEditMemberSection();
+  addEventsToButtons();
   console.log("APP DONE SUCCESFULLY");
 }
 
