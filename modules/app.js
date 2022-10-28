@@ -1,8 +1,9 @@
 const app = {
+  appData: null,
   wheatherApiKey: "72f1e697d6e7311ea64d8c29f3c8330f",
   localStorageAvailable: false,
-  gitUsers: { adva: "adva-mo", adva: "adva-mo", adva: "adva-mo" },
-  gitKey: "some-key",
+  // gitUsers: { adva: "adva-mo", adva: "adva-mo", adva: "adva-mo" },
+  // gitKey: "some-key",
   tablePropeties: [
     "gitStudentName",
     "id",
@@ -15,6 +16,7 @@ const app = {
     "hobby",
     "",
   ],
+  curSearchTerm: "name",
 };
 var rowsCounter = 0;
 const table = document.querySelector(".table-container");
@@ -60,6 +62,7 @@ async function transformData(data) {
     }
     const results = await Promise.all(myPromises);
     // console.log(results);
+    app.appData = [...results];
     return results;
   } catch {
     console.log(e);
@@ -108,7 +111,7 @@ function displayRow(row, rowsCounter, member) {
       } else {
         newCell.setAttribute("data-value", `${prop}`);
         newCell.textContent = member[prop];
-        console.log(member);
+        // console.log(member);
       }
     }
     cellCounter++;
@@ -125,12 +128,66 @@ function insertEditButtons(cell) {
   cell.appendChild(editStudent);
 }
 
+//! -------------------event listeners functions------------------
+
+function addEventsToEditMemberSection() {
+  const deleteButtons = document.querySelectorAll(".delete-student");
+  const editButtons = document.querySelectorAll(".edit-student");
+
+  deleteButtons.forEach((b) => {
+    b.addEventListener("click", deleteStudent);
+  });
+  editButtons.forEach((b) => {
+    b.addEventListener("click", editStudent);
+  });
+}
+
+function deleteStudent(e) {
+  console.log("clocked on delete");
+}
+
+function editStudent(e) {
+  console.log("clicked on edit");
+}
+//! -------------------seraching functions------------------
+
+function addInputEvents() {
+  const searchCategory = document.querySelector("select");
+  searchCategory.addEventListener("change", setSearchTerm);
+  const searchBar = document.getElementById("search-input");
+  searchBar.addEventListener("input", searchForMmember);
+}
+
+function searchForMmember(e) {
+  const matches = [];
+  console.log(`user is lokking for: ${e.target.value}`);
+  console.log(app.appData);
+  for (let i = 0; i < app.appData.length; i++) {
+    const student = app.appData[i];
+    for (let prop in student) {
+      if (student[prop] == e.target.value) {
+        matches.push(`${student.id}`);
+      }
+    }
+  }
+  console.log(matches);
+}
+
+function setSearchTerm(e) {
+  app.curSearchTerm = e.target.value;
+}
+
 //! -------------------!------------------
 
 //! -------------------APP starts here!------------------
 
-async function mainApp() {
+function displayApp() {
   createRow();
+  addInputEvents();
+}
+
+async function mainApp() {
+  // let ok = await addInputEvent();
   try {
     const classObj = await getAllGroupMembers();
     //console.log(classObj);
@@ -140,8 +197,10 @@ async function mainApp() {
   } catch {
     console.log("error");
   }
+  addEventsToEditMemberSection();
   console.log("APP DONE SUCCESFULLY");
 }
+displayApp();
 mainApp();
 
 //! -------------------wheather api functions - tested !-------------------
