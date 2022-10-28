@@ -17,6 +17,19 @@
   padding: 0.3rem 0.3rem;
   margin: 1rem;
 }
-.search:focus {
-  border: none;
+.table-row {
+  width: 100%;
+  background-color: brown;
+  height: 3rem;
+  display: flex;
+}
+.table-cell {
+  background-color: rgb(28, 131, 98);
+  border: 1px solid black;
+  width: 2rem;
+  height: 3rem;
+  flex-grow: 1;
+  /* text-align: center; */
+  /* justify-content: center; */
+  align-items: center;
 }

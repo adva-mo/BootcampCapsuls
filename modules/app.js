@@ -1,13 +1,28 @@
 const app = {
   wheatherApiKey: "72f1e697d6e7311ea64d8c29f3c8330f",
   localStorageAvailable: false,
+  gitUsers: { adva: "adva-mo", adva: "adva-mo", adva: "adva-mo" },
+  gitKey: "some-key",
+  tablePropeties: [
+    "gitStudentName",
+    "id",
+    "Name",
+    "Last Name",
+    "City",
+    "Gender",
+    "Hobby",
+    "edit",
+  ],
 };
+var rowsCounter = 0;
+const table = document.querySelector(".table-container");
+
+//! -------------------aSync functions------------------
 
 async function fetchData(url) {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    // console.log(data);
     return data;
   } catch (e) {
     console.log(e);
@@ -44,6 +59,37 @@ async function transformData(data) {
   }
 }
 
+//! -------------------draw table functions------------------
+
+function drawPropRaw() {
+  const propRaw = document.createElement("div");
+  propRaw.classList.add("table-row");
+  table.appendChild(propRaw);
+  insert9divsToRow(propRaw, rowsCounter);
+  rowsCounter++;
+}
+
+function insert9divsToRow(propRaw, rowsCounter) {
+  let cellCounter = 0;
+  for (let prop of app.tablePropeties) {
+    let newCell = document.createElement("div");
+    newCell.classList.add("table-cell", "flex");
+    newCell.setAttribute("id", `${prop}`);
+    if (rowsCounter === 0) {
+      if (cellCounter === 0 || cellCounter === 7) {
+        newCell.textContent = "";
+      } else {
+        newCell.textContent = `${prop}`;
+      }
+    }
+    cellCounter++;
+    propRaw.appendChild(newCell);
+  }
+}
+
+drawPropRaw();
+drawPropRaw();
+
 //! -------------------APP starts here!------------------
 // getAllGroupMembers();
 
@@ -78,7 +124,7 @@ async function getCityWeather(lat, lon) {
     console.log(e);
   }
 }
-getCityCoordinates("mexico-city");
+// getCityCoordinates("mexico-city");
 
 //! -------------------local storage functuons -  tested !-------------------
 //? TODO
