@@ -12,6 +12,7 @@ body {
   background-color: rgb(27, 99, 75);
   width: 90vw;
   height: 90vh;
+  /* display: none; */
 }
 .search:focus {
   border: none;

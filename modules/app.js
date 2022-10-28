@@ -2,8 +2,7 @@ const app = {
   appData: null,
   wheatherApiKey: "72f1e697d6e7311ea64d8c29f3c8330f",
   localStorageAvailable: false,
-  // gitUsers: { adva: "adva-mo", adva: "adva-mo", adva: "adva-mo" },
-  // gitKey: "some-key",
+  gitUsers: { adva: "adva-mo", adva: "adva-mo", adva: "adva-mo" },
   tablePropeties: [
     "gitStudentName",
     "id",
@@ -17,6 +16,7 @@ const app = {
     "",
   ],
   curSearchTerm: "name",
+  editMood: false,
 };
 var rowsCounter = 0;
 const table = document.querySelector(".table-container");
@@ -123,26 +123,6 @@ function displayRow(row, rowsCounter, member) {
   }
 }
 
-function applyEditOption() {
-  const editable = table.querySelectorAll(".firstName");
-  const editable1 = table.querySelectorAll("#lastName");
-  const editable2 = table.querySelectorAll("#capsule");
-  const editable3 = table.querySelectorAll("#age");
-  const editable4 = table.querySelectorAll("#city");
-  const editable5 = table.querySelectorAll("#hobby");
-  const myEditables = [
-    ...editable,
-    ...editable1,
-    ...editable2,
-    ...editable3,
-    ...editable4,
-    ...editable5,
-  ];
-  myEditables.forEach((c) => {
-    c.contentEditable = "true";
-  });
-}
-
 function insertEditButtons(cell) {
   const deleteStudent = document.createElement("button");
   deleteStudent.classList.add("delete-student");
@@ -155,6 +135,7 @@ function insertEditButtons(cell) {
 //! -------------------event listeners functions------------------
 
 function addEventsToButtons() {
+  document.body.addEventListener("click", (e) => console.log(e.target));
   const deleteButtons = document.querySelectorAll(".delete-student");
   const editButtons = document.querySelectorAll(".edit-student");
 
@@ -176,7 +157,25 @@ function deleteStudent(e) {
 }
 
 function editStudent(e) {
-  console.log("clicked on edit");
+  const rowCells = e.path[2].children;
+  if (!app.editMood) {
+    app.editMood = true;
+    console.log("clicked on edit");
+    for (let i = 0; i < rowCells.length; i++) {
+      console.log(rowCells[i]);
+      if (i == 0 || i == 1 || i == 9 || i == 7) {
+        rowCells[i].contentEditable = "false";
+      } else {
+        rowCells[i].contentEditable = "true";
+      }
+    }
+  } else {
+    for (let i = 0; i < rowCells.length; i++) {
+      rowCells[i].contentEditable = "false";
+    }
+    app.editMood = false;
+    console.log("saved");
+  }
 }
 //! -------------------seraching functions------------------
 
@@ -185,6 +184,15 @@ function addInputEvents() {
   searchCategory.addEventListener("change", setSearchTerm);
   const searchBar = document.getElementById("search-input");
   searchBar.addEventListener("input", searchForMatches);
+  searchBar.addEventListener("focusin", () => {});
+  searchBar.addEventListener("focusout", displayAllStudents);
+}
+function displayAllStudents(e) {
+  e.target.value = "";
+  const allStudents = table.children;
+  for (row of allStudents) {
+    row.classList.remove("hidden");
+  }
 }
 
 function setSearchTerm(e) {
@@ -192,6 +200,7 @@ function setSearchTerm(e) {
 }
 
 function searchForMatches(e) {
+  console.log(e);
   var unMatches = [];
   var matches = [];
   for (let i = 0; i < app.appData.length; i++) {
@@ -218,9 +227,30 @@ function removeUnMatched(unMatches, matches) {
   }
 }
 
-//! -------------------!------------------
+//! -------------------tests------------------
+
+// async function displayAvatars() {
+//   // { 011: "adva-mo", 012: "adva-mo", 013: "adva-mo" }
+//   try {
+//     const myPromises = [];
+//     for (prop in app.gitUsers) {
+//       const avatar = fetchData(
+//         `https://api.github.com/users/${app.gitUsers[prop]}`
+//       );
+//       myPromises.push(avatar);
+//     }
+//     const arrOfavatar = await Promise.all(myPromises);
+//     for (val of)
+//     console.log(arrOfavatar);
+//   } catch {
+//     console.log("eroor");
+//   }
+// }
 
 //! -------------------APP starts here!------------------
+
+displayApp();
+displayData();
 
 function displayApp() {
   createRow();
@@ -232,17 +262,14 @@ async function displayData() {
     const classObj = await getAllGroupMembers();
     classObj.forEach((member, i) => {
       createRow(member);
+      // here function thet retrieves avatars
     });
   } catch {
     console.log("error");
   }
   addEventsToButtons();
-  console.log("APP DONE SUCCESFULLY");
+  console.log("APP UPLOADED SUCCESFULLY");
 }
-
-displayApp();
-displayData();
-applyEditOption();
 
 //! -------------------wheather api functions - tested !-------------------
 
@@ -319,3 +346,22 @@ function ifLocalStorageAvailable() {
     // Too bad, no localStorage for us
   }
 }
+//! -------------------avatar git hub functions ------------------
+
+// async function displayAvatars() {
+//   // { 011: "adva-mo", 012: "adva-mo", 013: "adva-mo" }
+//   try {
+//     const myPromises = [];
+//     for (prop in app.gitUsers) {
+//       const avatar = fetchData(
+//         `https://api.github.com/users/${app.gitUsers[prop]}`
+//       );
+//       myPromises.push(avatar);
+//     }
+//     const arrOfavatar = await Promise.all(myPromises);
+//     for (val of)
+//     console.log(arrOfavatar);
+//   } catch {
+//     console.log("eroor");
+//   }
+// }
