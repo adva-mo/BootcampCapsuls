@@ -96,7 +96,10 @@ function displayRow(row, rowsCounter, member) {
   for (let prop of app.tablePropeties) {
     let newCell = document.createElement("div");
     newCell.classList.add("table-cell");
+    // newCell.setAttribute("class", `${prop}`);
     newCell.setAttribute("id", `${prop}`);
+    // newCell.classList.add(`${prop}`);
+    // newCell.setAttribute("data-prop", `${prop}`);
     if (rowsCounter === 0) {
       if (cellCounter === 0) {
         newCell.textContent = "";
@@ -106,20 +109,38 @@ function displayRow(row, rowsCounter, member) {
         newCell.textContent = `${prop}`;
       }
     } else {
-      // console.log(member.firstName);
       row.classList.add(`id${member.id}`);
+      // console.log(member.firstName);
       if (cellCounter === 9) {
-        //insert buttons
         insertEditButtons(newCell);
       } else {
-        newCell.setAttribute("data-value", `${prop}`);
+        // newCell.setAttribute("data-value", `${prop}`);
         newCell.textContent = member[prop];
-        // console.log(member);
       }
     }
     cellCounter++;
     row.appendChild(newCell);
   }
+}
+
+function applyEditOption() {
+  const editable = table.querySelectorAll(".firstName");
+  const editable1 = table.querySelectorAll("#lastName");
+  const editable2 = table.querySelectorAll("#capsule");
+  const editable3 = table.querySelectorAll("#age");
+  const editable4 = table.querySelectorAll("#city");
+  const editable5 = table.querySelectorAll("#hobby");
+  const myEditables = [
+    ...editable,
+    ...editable1,
+    ...editable2,
+    ...editable3,
+    ...editable4,
+    ...editable5,
+  ];
+  myEditables.forEach((c) => {
+    c.contentEditable = "true";
+  });
 }
 
 function insertEditButtons(cell) {
@@ -201,7 +222,7 @@ function displayApp() {
   addInputEvents();
 }
 
-async function mainApp() {
+async function displayData() {
   try {
     const classObj = await getAllGroupMembers();
     classObj.forEach((member, i) => {
@@ -213,8 +234,10 @@ async function mainApp() {
   addEventsToEditMemberSection();
   console.log("APP DONE SUCCESFULLY");
 }
+
 displayApp();
-mainApp();
+displayData();
+applyEditOption();
 
 //! -------------------wheather api functions - tested !-------------------
 
