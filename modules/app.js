@@ -74,6 +74,7 @@ async function addGitData(results) {
     const res = results;
     return results.map((e) => {
       e.gitStudentName = "1";
+      e.id = `${e.id}`;
       // console.log(e.gitStudentName);
     });
   } catch {
@@ -105,6 +106,8 @@ function displayRow(row, rowsCounter, member) {
         newCell.textContent = `${prop}`;
       }
     } else {
+      // console.log(member.firstName);
+      row.classList.add(`id${member.id}`);
       if (cellCounter === 9) {
         //insert buttons
         insertEditButtons(newCell);
@@ -155,26 +158,38 @@ function addInputEvents() {
   const searchCategory = document.querySelector("select");
   searchCategory.addEventListener("change", setSearchTerm);
   const searchBar = document.getElementById("search-input");
-  searchBar.addEventListener("input", searchForMmember);
-}
-
-function searchForMmember(e) {
-  const matches = [];
-  console.log(`user is lokking for: ${e.target.value}`);
-  console.log(app.appData);
-  for (let i = 0; i < app.appData.length; i++) {
-    const student = app.appData[i];
-    for (let prop in student) {
-      if (student[prop] == e.target.value) {
-        matches.push(`${student.id}`);
-      }
-    }
-  }
-  console.log(matches);
+  searchBar.addEventListener("input", searchForMatches);
 }
 
 function setSearchTerm(e) {
   app.curSearchTerm = e.target.value;
+}
+
+function searchForMatches(e) {
+  var unMatches = [];
+  var matches = [];
+  for (let i = 0; i < app.appData.length; i++) {
+    const student = app.appData[i];
+    for (let prop in student) {
+      if (student[prop] != e.target.value) {
+        unMatches.push(student.id);
+      } else {
+        matches.push(student.id);
+      }
+    }
+  }
+  removeUnMatched(unMatches, matches);
+}
+
+function removeUnMatched(unMatches, matches) {
+  for (member of unMatches) {
+    const toRemove = document.querySelector(`.id${member}`);
+    toRemove.classList.add("hidden");
+  }
+  for (member of matches) {
+    const toRemove = document.querySelector(`.id${member}`);
+    toRemove.classList.remove("hidden");
+  }
 }
 
 //! -------------------!------------------
@@ -187,10 +202,8 @@ function displayApp() {
 }
 
 async function mainApp() {
-  // let ok = await addInputEvent();
   try {
     const classObj = await getAllGroupMembers();
-    //console.log(classObj);
     classObj.forEach((member, i) => {
       createRow(member);
     });
@@ -232,7 +245,7 @@ async function getCityWeather(lat, lon) {
     console.log(e);
   }
 }
-// getCityCoordinates("mexico-city");
+// getCityCoordinates("karmiel");
 
 //! -------------------local storage functuons -  tested !-------------------
 //? TODO

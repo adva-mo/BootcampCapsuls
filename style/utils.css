@@ -41,3 +41,6 @@ button {
 .edit-student {
   background-color: rgb(37, 208, 211);
 }
+.hidden {
+  display: none;
+}
