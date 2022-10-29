@@ -24,11 +24,10 @@ body {
   overflow: hidden;
 }
 .form-container {
-  background-color: #fff;
+  background-color: rgba(250, 181, 42, 0.685);
   padding: 0;
   margin: 0.3rem 0.3rem;
-  border: var(--gray-web) solid 0.5px;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .search:focus {
@@ -43,9 +42,18 @@ body {
 .weather-window {
   border-radius: 10px;
   display: inline-block;
-  background-color: var(--gray-web);
+  background-color: var(--weather-blue);
+  color: var(--weather-text);
+  font-weight: 500;
   position: fixed;
   z-index: 1;
-  padding: 0.2rem;
+  padding: 0.5rem;
   transform: translate(300%, -90%);
+  box-shadow: var(--weather-light-blue) 1px;
+}
+.city:hover {
+  text-decoration: underline;
+}
+h1 {
+  padding: 0 0.5rem;
 }
