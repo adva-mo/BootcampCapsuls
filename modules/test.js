@@ -15,7 +15,7 @@ const app = {
     "hobby",
     "",
   ],
-  curSearchTerm: "name",
+  curSearchTerm: "firstName",
   editMood: false,
 };
 var rowsCounter = 0;
@@ -40,6 +40,7 @@ async function getAllGroupMembers() {
     const myPromises = [group1, group2];
     const data = await Promise.all(myPromises);
     // console.log(data);
+    // const DATAid
     const results = await transformData(data);
     await addGitData(results);
     // console.log("got all group members", results);
@@ -217,23 +218,6 @@ function setSearchTerm(e) {
   app.curSearchTerm = e.target.value;
 }
 
-function searchForMatches(e) {
-  console.log(e);
-  var unMatches = [];
-  var matches = [];
-  for (let i = 0; i < app.appData.length; i++) {
-    const student = app.appData[i];
-    for (let prop in student) {
-      if (student[prop] != e.target.value) {
-        unMatches.push(student.id);
-      } else {
-        matches.push(student.id);
-      }
-    }
-  }
-  removeUnMatched(unMatches, matches);
-}
-
 function removeUnMatched(unMatches, matches) {
   for (member of unMatches) {
     const toRemove = document.querySelector(`.id${member}`);
@@ -244,35 +228,15 @@ function removeUnMatched(unMatches, matches) {
     toRemove.classList.remove("hidden");
   }
 }
-function addInputEvents() {
-  const searchCategory = document.querySelector("select");
-  searchCategory.addEventListener("change", setSearchTerm);
-  const searchBar = document.getElementById("search-input");
-  searchBar.addEventListener("input", searchForMatches);
-  searchBar.addEventListener("focusin", () => {});
-  searchBar.addEventListener("focusout", displayAllStudents);
-}
-function displayAllStudents(e) {
-  e.target.value = "";
-  const allStudents = table.children;
-  for (row of allStudents) {
-    row.classList.remove("hidden");
-  }
-}
-
-function setSearchTerm(e) {
-  app.curSearchTerm = e.target.value;
-  console.log(app.curSearchTerm);
-}
 
 function searchForMatches(e) {
-  console.log(e);
+  console.log(e.target.value);
   var unMatches = [];
   var matches = [];
   for (let i = 0; i < app.appData.length; i++) {
     const student = app.appData[i];
     for (let prop in student) {
-      if (student[app.appData] != e.target.value) {
+      if (student[app.curSearchTerm] != e.target.value) {
         unMatches.push(student.id);
       } else {
         matches.push(student.id);
@@ -281,69 +245,6 @@ function searchForMatches(e) {
   }
   removeUnMatched(unMatches, matches);
 }
-
-function removeUnMatched(unMatches, matches) {
-  //? search row by ID
-  for (member of unMatches) {
-    const toRemove = document.querySelector(`.id${member}`);
-    toRemove.classList.add("hidden");
-  }
-  for (member of matches) {
-    const toRemove = document.querySelector(`.id${member}`);
-    toRemove.classList.remove("hidden");
-  }
-}
-//*
-
-// function addInputEvents() {
-//   const searchCategory = document.querySelector("select");
-//   searchCategory.addEventListener("change", setSearchTerm);
-//   const searchBar = document.getElementById("search-input");
-//   searchBar.addEventListener("input", searchForMatches);
-//   searchBar.addEventListener("focusin", () => {});
-//   searchBar.addEventListener("focusout", displayAllStudents);
-// }
-// function displayAllStudents(e) {
-//   e.target.value = "";
-//   const allStudents = table.children;
-//   for (row of allStudents) {
-//     row.classList.remove("hidden");
-//   }
-// }
-
-// function setSearchTerm(e) {
-//   app.curSearchTerm = e.target.value;
-//   console.log(app.curSearchTerm);
-// }
-
-// function searchForMatches(e) {
-//   console.log(e);
-//   var unMatches = [];
-//   var matches = [];
-//   for (let i = 0; i < app.appData.length; i++) {
-//     const student = app.appData[i];
-//     for (let prop in student) {
-//       if (student[app.appData] != e.target.value) {
-//         unMatches.push(student.id);
-//       } else {
-//         matches.push(student.id);
-//       }
-//     }
-//   }
-//   removeUnMatched(unMatches, matches);
-// }
-
-// function removeUnMatched(unMatches, matches) {
-//   //? search row by ID
-//   for (member of unMatches) {
-//     const toRemove = document.querySelector(`.id${member}`);
-//     toRemove.classList.add("hidden");
-//   }
-//   for (member of matches) {
-//     const toRemove = document.querySelector(`.id${member}`);
-//     toRemove.classList.remove("hidden");
-//   }
-// }
 
 //! -------------------tests------------------
 

@@ -29,43 +29,34 @@ async function fetchData(url) {
     const data = await response.json();
     return data;
   } catch (e) {
-    console.log(e);
+    console.log("error");
   }
 }
 
 async function getAllGroupMembers() {
   try {
-    const group1 = fetchData("https://capsules7.herokuapp.com/api/group/one");
-    const group2 = fetchData("https://capsules7.herokuapp.com/api/group/two");
-    const myPromises = [group1, group2];
-    const data = await Promise.all(myPromises);
-    // console.log(data);
-    const results = await transformData(data);
-    await addGitData(results);
-    // console.log("got all group members", results);
-    return results;
+    let group1 = await fetchData(
+      "https://capsules7.herokuapp.com/api/group/one"
+    );
+    let group2 = await fetchData(
+      "https://capsules7.herokuapp.com/api/group/two"
+    );
+    console.log(group1, group2);
+    const mergedArr = group1.concat(group2);
+    mergedArr.sort((a, b) => a.id - b.id);
+    console.log(mergedArr);
+    let people = [];
+    for (let i = 0; i < mergedArr.length; i++) {
+      const person = fetchData(
+        `https://capsules7.herokuapp.com/api/user/${mergedArr[i].id}`
+      );
+      people.push(person);
+    }
+    const data = await Promise.all(people);
+    console.log(data);
+    return data;
   } catch {
     console.log("group members are not available");
-  }
-}
-
-async function transformData(data) {
-  try {
-    const members = [...data[0], ...data[1]];
-    const myPromises = [];
-    for (let member of members) {
-      const ID = member.id;
-      const fullMember = fetchData(
-        `https://capsules7.herokuapp.com/api/user/${ID}`
-      );
-      myPromises.push(fullMember);
-    }
-    const results = await Promise.all(myPromises);
-    // console.log(results);
-    app.appData = [...results];
-    return results;
-  } catch {
-    console.log("error transform data func");
   }
 }
 
