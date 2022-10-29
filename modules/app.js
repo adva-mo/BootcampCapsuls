@@ -147,6 +147,9 @@ function displayRow(row, rowsCounter, member) {
       if (cellCounter === 9) {
         insertEditButtons(newCell);
       } else {
+        if (cellCounter === 6) {
+          newCell.classList.add(`${prop}`);
+        }
         newCell.textContent = member[prop];
       }
     }
@@ -168,17 +171,38 @@ function insertEditButtons(cell) {
 
 //! -------------------event listeners functions------------------
 
+async function popWeather(weather) {
+  try {
+    console.log(weather);
+    const weatherWindow = document.createElement("div");
+    weatherWindow.classList.add("weather-window");
+    weatherWindow.innerHTML = `Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
+    table.append(weatherWindow);
+  } catch {
+    console.log("e");
+  }
+}
+
 function addEventsToButtons() {
-  document.body.addEventListener("click", (e) => console.log(e.target));
+  document.addEventListener("click", handleClickEvents);
   const deleteButtons = document.querySelectorAll(".delete-btn");
   const editButtons = document.querySelectorAll(".edit-btn");
-
   deleteButtons.forEach((b) => {
     b.addEventListener("click", deleteStudent);
   });
   editButtons.forEach((b) => {
     b.addEventListener("click", editStudent);
   });
+}
+
+function handleClickEvents(e) {
+  if (e.target.classList.contains("city")) {
+    const city = e.srcElement.innerHTML;
+    const location = e.target;
+    displayCityWeather(city, location);
+    console.log(e.srcElement.innerHTML);
+    console.log(e.target);
+  }
 }
 
 function deleteStudent(e) {
@@ -285,6 +309,7 @@ async function displayData() {
     console.log("error");
   }
   addEventsToButtons();
+  // addHoverEvents()
   console.log("APP UPLOADED SUCCESFULLY");
 }
 
@@ -321,7 +346,7 @@ async function fetchWeather(lat, lon) {
     console.log("e");
   }
 }
-async function displayCityWeather(cityName) {
+async function displayCityWeather(cityName, location) {
   try {
     let city;
     for (prop in cityInEnglish) {
@@ -331,24 +356,27 @@ async function displayCityWeather(cityName) {
     }
     const currentWeather = await getCityCoordinates(city);
     console.log(currentWeather);
-    await popWeather(currentWeather);
+    await popWeather(currentWeather, location);
   } catch {
     console.log("error ");
   }
 }
 
-async function popWeather(weather) {
+async function popWeather(weather, location) {
   try {
     console.log(weather);
     const weatherWindow = document.createElement("div");
+    weatherWindow.classList.add("weather-window");
     weatherWindow.innerHTML = `Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
-    table.append(weatherWindow);
+    location.before(weatherWindow);
+    setTimeout(() => {
+      console.log("timput");
+      weatherWindow.remove();
+    }, 3000);
   } catch {
     console.log("e");
   }
 }
-
-displayCityWeather("עראמשה");
 
 //! -------------------local storage functuons -  tested !-------------------
 //? TODO
