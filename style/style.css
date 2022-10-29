@@ -3,23 +3,36 @@ body {
   padding-top: 2rem;
   background: url(/photos/beer-bg.jpeg);
   height: 100%;
+  font-family: "Dosis", sans-serif;
 }
 .landing-page {
   background-color: aquamarine;
   width: 90vw;
   height: 90vh;
   display: none;
-  border-radius: 10%;
+  border-radius: 20px;
 }
 .main-container {
-  border-radius: 10%;
+  border-radius: 20px;
   height: 120%;
 }
 .the-class {
   height: 120%;
-  border-radius: 10%;
+  border-radius: 20px;
   background-color: var(--nice-w);
   width: 95vw;
+  overflow: hidden;
+}
+.form-container {
+  background-color: #fff;
+  padding: 0;
+  margin: 0.3rem 0.3rem;
+  border: var(--gray-web) solid 0.5px;
+  border-radius: 5px;
+}
+form input,
+form h1,
+form select {
 }
 .search:focus {
   border: none;
@@ -27,5 +40,7 @@ body {
 .table-container {
   background-color: var(--nice-w);
   width: 100%;
-  border-radius: 10%;
+  border-radius: 20px;
+  margin-bottom: 3em;
+  /* padding-bottom: 1.5rem; */
 }

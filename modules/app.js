@@ -125,21 +125,21 @@ function displayRow(row, rowsCounter, member) {
 
 function insertEditButtons(cell) {
   const deleteStudent = document.createElement("button");
-  deleteStudent.classList.add("delete-student");
-  deleteStudent.innerHTML = "<i class=`fa-solid fa-trash-can`></i>";
+  deleteStudent.classList.add("delete-btn");
+  deleteStudent.innerHTML = "&#10007;";
   const editStudent = document.createElement("button");
-  editStudent.classList.add("edit-student");
-  deleteStudent.innerHTML = "<i class=`fa-solid fa-trash-can`></i>";
-  cell.appendChild(deleteStudent);
+  editStudent.classList.add("edit-btn");
+  editStudent.innerHTML = "&#9998;";
   cell.appendChild(editStudent);
+  cell.appendChild(deleteStudent);
 }
 
 //! -------------------event listeners functions------------------
 
 function addEventsToButtons() {
   document.body.addEventListener("click", (e) => console.log(e.target));
-  const deleteButtons = document.querySelectorAll(".delete-student");
-  const editButtons = document.querySelectorAll(".edit-student");
+  const deleteButtons = document.querySelectorAll(".delete-btn");
+  const editButtons = document.querySelectorAll(".edit-btn");
 
   deleteButtons.forEach((b) => {
     b.addEventListener("click", deleteStudent);
@@ -284,7 +284,7 @@ async function getCityCoordinates(cityName) {
     const lon = cityData[0].lon.toFixed(2);
     await getCityWeather(lat, lon);
   } catch {
-    console.log(e);
+    console.log("e");
   }
 }
 
@@ -299,10 +299,10 @@ async function getCityWeather(lat, lon) {
     const cityWeather = await res.json();
     console.log(cityWeather.main);
   } catch {
-    console.log(e);
+    console.log("e");
   }
 }
-// getCityCoordinates("karmiel");
+getCityCoordinates("jerusalem");
 
 //! -------------------local storage functuons -  tested !-------------------
 //? TODO

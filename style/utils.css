@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@200;300;400;500;600&display=swap");
+
 * {
   padding: 0;
   margin: 0;
@@ -20,14 +22,12 @@
   flex-direction: column;
 }
 .search {
-  width: 6rem;
+  width: 6.5rem;
   padding: 0.3rem 0.3rem;
-  margin: 1rem;
+  margin: 0;
 }
 .table-row {
   width: 100%;
-  /* background-color: brown; */
-  height: 2rem;
   display: flex;
 }
 .table-cell {
@@ -46,10 +46,10 @@ button {
   border: var(--gray-web) solid 0.5px;
   flex-grow: 1;
 }
-.delete-student {
+.delete-btn {
   background-color: var(--primary-color);
 }
-.edit-student {
+.edit-btn {
   background-color: var(--olive);
 }
 .hidden {
@@ -57,4 +57,9 @@ button {
 }
 .primary-border {
   outline: var(--olive) solid 5px;
+}
+input,
+select {
+  border: none;
+  font-family: "Dosis", sans-serif;
 }
