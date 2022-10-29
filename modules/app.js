@@ -21,6 +21,30 @@ const app = {
 var rowsCounter = 0;
 const table = document.querySelector(".table-container");
 
+const cityInEnglish = {
+  netanya: "נתניה",
+  aramsha: "עראמשה",
+  "kiryat%shemona": "קרית שמונה",
+  netanya: "נתניה",
+  kseifa: "כסיפה",
+  "Ein%Qiniyye": "עין קנייא",
+  Tiberias: "טבריה",
+  Hurfeish: "חורפש",
+  ashdod: "אשדוד",
+  netivot: "נתיבות",
+  Beersheba: "באר שבע",
+  Kedumim: "קדומים",
+  jerusalem: "ירושלים",
+  karmiel: "כרמיאל",
+  "Rishon%LeZion": "ראשון לציון",
+  "Peki'in": "פקיעין",
+  Julis: "ג'וליס",
+  "Petah%Tikva": "פתח תקווה",
+  ako: "עכו",
+  "Kafr%Qara": "כפר קרע",
+  hedera: "חדרה",
+};
+
 //! -------------------aSync functions------------------
 
 async function fetchData(url) {
@@ -41,10 +65,10 @@ async function getAllGroupMembers() {
     let group2 = await fetchData(
       "https://capsules7.herokuapp.com/api/group/two"
     );
-    console.log(group1, group2);
+    // console.log(group1, group2);
     const mergedArr = group1.concat(group2);
     mergedArr.sort((a, b) => a.id - b.id);
-    console.log(mergedArr);
+    // console.log(mergedArr);
     let people = [];
     for (let i = 0; i < mergedArr.length; i++) {
       const person = fetchData(
@@ -53,7 +77,8 @@ async function getAllGroupMembers() {
       people.push(person);
     }
     const data = await Promise.all(people);
-    console.log(data);
+    // console.log(data);
+    app.appData = [...data];
     return data;
   } catch {
     console.log("group members are not available");
@@ -238,24 +263,6 @@ function searchForMatches(e) {
 
 //! -------------------tests------------------
 
-// async function displayAvatars() {
-//   // { 011: "adva-mo", 012: "adva-mo", 013: "adva-mo" }
-//   try {
-//     const myPromises = [];
-//     for (prop in app.gitUsers) {
-//       const avatar = fetchData(
-//         `https://api.github.com/users/${app.gitUsers[prop]}`
-//       );
-//       myPromises.push(avatar);
-//     }
-//     const arrOfavatar = await Promise.all(myPromises);
-//     for (val of)
-//     console.log(arrOfavatar);
-//   } catch {
-//     console.log("eroor");
-//   }
-// }
-
 //! -------------------APP starts here!------------------
 
 displayApp();
@@ -290,13 +297,14 @@ async function getCityCoordinates(cityName) {
     );
     const lat = cityData[0].lat.toFixed(2);
     const lon = cityData[0].lon.toFixed(2);
-    await getCityWeather(lat, lon);
+    const coors = await fetchWeather(lat, lon);
+    return coors;
   } catch {
     console.log("e");
   }
 }
 
-async function getCityWeather(lat, lon) {
+async function fetchWeather(lat, lon) {
   try {
     const res = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${app.wheatherApiKey}`
@@ -305,12 +313,42 @@ async function getCityWeather(lat, lon) {
       return;
     }
     const cityWeather = await res.json();
-    console.log(cityWeather.main);
+    const tempNow = cityWeather.main.temp;
+    const tempFeelsLike = cityWeather.main.feels_like;
+    let weatherData = { now: tempNow, feels: tempFeelsLike };
+    return weatherData;
   } catch {
     console.log("e");
   }
 }
-// getCityCoordinates("jerusalem");
+async function displayCityWeather(cityName) {
+  try {
+    let city;
+    for (prop in cityInEnglish) {
+      if (cityInEnglish[prop] == cityName) {
+        city = prop;
+      }
+    }
+    const currentWeather = await getCityCoordinates(city);
+    console.log(currentWeather);
+    await popWeather(currentWeather);
+  } catch {
+    console.log("error ");
+  }
+}
+
+async function popWeather(weather) {
+  try {
+    console.log(weather);
+    const weatherWindow = document.createElement("div");
+    weatherWindow.innerHTML = `Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
+    table.append(weatherWindow);
+  } catch {
+    console.log("e");
+  }
+}
+
+displayCityWeather("עראמשה");
 
 //! -------------------local storage functuons -  tested !-------------------
 //? TODO
