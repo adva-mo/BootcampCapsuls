@@ -15,7 +15,7 @@ const app = {
     "hobby",
     "",
   ],
-  curSearchTerm: "name",
+  curSearchTerm: "firstName",
   editMood: false,
 };
 var rowsCounter = 0;
@@ -65,7 +65,7 @@ async function transformData(data) {
     app.appData = [...results];
     return results;
   } catch {
-    console.log(e);
+    console.log("error transform data func");
   }
 }
 
@@ -78,7 +78,7 @@ async function addGitData(results) {
       // console.log(e.gitStudentName);
     });
   } catch {
-    console.log("eroor");
+    console.log("eroor in github function");
   }
 }
 //! -------------------draw table functions------------------
@@ -86,9 +86,29 @@ async function addGitData(results) {
 function createRow(member) {
   const row = document.createElement("div");
   row.classList.add("table-row");
-  table.appendChild(row);
   displayRow(row, rowsCounter, member);
+  table.appendChild(row);
   rowsCounter++;
+}
+
+//? TODO test function:
+function createTableHeader() {
+  var cellCounter = 0;
+  const row = document.createElement("div");
+  row.classList.add("table-row");
+  for (let prop of app.tablePropeties) {
+    let newCell = document.createElement("div");
+    newCell.classList.add("table-cell");
+    if (cellCounter === 0) {
+      newCell.textContent = "";
+    } else if (cellCounter === 9) {
+      newCell.textContent = `${prop}`;
+    } else {
+      newCell.textContent = `${prop}`;
+    }
+    cellCounter++;
+    table.appendChild(row);
+  }
 }
 
 function displayRow(row, rowsCounter, member) {
@@ -96,11 +116,9 @@ function displayRow(row, rowsCounter, member) {
   for (let prop of app.tablePropeties) {
     let newCell = document.createElement("div");
     newCell.classList.add("table-cell");
-    // newCell.setAttribute("class", `${prop}`);
-    newCell.setAttribute("id", `${prop}`);
-    // newCell.classList.add(`${prop}`);
-    // newCell.setAttribute("data-prop", `${prop}`);
+    newCell.setAttribute("data-prop", `${prop}`);
     if (rowsCounter === 0) {
+      //?case of fiert row
       if (cellCounter === 0) {
         newCell.textContent = "";
       } else if (cellCounter === 9) {
@@ -110,11 +128,9 @@ function displayRow(row, rowsCounter, member) {
       }
     } else {
       row.classList.add(`id${member.id}`);
-      // console.log(member.firstName);
       if (cellCounter === 9) {
         insertEditButtons(newCell);
       } else {
-        // newCell.setAttribute("data-value", `${prop}`);
         newCell.textContent = member[prop];
       }
     }
@@ -201,23 +217,6 @@ function setSearchTerm(e) {
   app.curSearchTerm = e.target.value;
 }
 
-function searchForMatches(e) {
-  console.log(e);
-  var unMatches = [];
-  var matches = [];
-  for (let i = 0; i < app.appData.length; i++) {
-    const student = app.appData[i];
-    for (let prop in student) {
-      if (student[prop] != e.target.value) {
-        unMatches.push(student.id);
-      } else {
-        matches.push(student.id);
-      }
-    }
-  }
-  removeUnMatched(unMatches, matches);
-}
-
 function removeUnMatched(unMatches, matches) {
   for (member of unMatches) {
     const toRemove = document.querySelector(`.id${member}`);
@@ -227,6 +226,23 @@ function removeUnMatched(unMatches, matches) {
     const toRemove = document.querySelector(`.id${member}`);
     toRemove.classList.remove("hidden");
   }
+}
+
+function searchForMatches(e) {
+  console.log(e.target.value);
+  var unMatches = [];
+  var matches = [];
+  for (let i = 0; i < app.appData.length; i++) {
+    const student = app.appData[i];
+    for (let prop in student) {
+      if (student[app.curSearchTerm] != e.target.value) {
+        unMatches.push(student.id);
+      } else {
+        matches.push(student.id);
+      }
+    }
+  }
+  removeUnMatched(unMatches, matches);
 }
 
 //! -------------------tests------------------
@@ -255,6 +271,7 @@ displayApp();
 displayData();
 
 function displayApp() {
+  createTableHeader();
   createRow();
   addInputEvents();
 }
@@ -302,7 +319,7 @@ async function getCityWeather(lat, lon) {
     console.log("e");
   }
 }
-getCityCoordinates("jerusalem");
+// getCityCoordinates("jerusalem");
 
 //! -------------------local storage functuons -  tested !-------------------
 //? TODO
