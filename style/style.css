@@ -8,13 +8,12 @@ body {
 .landing-page {
   background-color: rgba(75, 74, 74, 0.687);
   width: 90vw;
-  /* height: 90vh; */
   border-radius: 20px;
-  /* outline: var(--olive) solid 5px; */
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 3rem;
+  margin-top: 4rem;
 }
 .main-container {
   border-radius: 20px;

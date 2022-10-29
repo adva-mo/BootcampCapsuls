@@ -81,6 +81,7 @@ async function getAllGroupMembers() {
     }
     const data = await Promise.all(people);
     app.appData = [...data];
+    //?ADD TO LOCAL STORAGE
     return data;
   } catch {
     console.log("group members are not available");
@@ -92,26 +93,20 @@ async function getAllGroupMembers() {
 function createRow(member) {
   const row = document.createElement("div");
   row.classList.add("table-row");
-  displayRow(row, rowsCounter, member);
+  createCells(row, rowsCounter, member);
   table.appendChild(row);
   rowsCounter++;
 }
 
-function displayRow(row, rowsCounter, member) {
+function createCells(row, rowsCounter, member) {
   let cellCounter = 0;
   for (let prop of app.tablePropeties) {
     let newCell = document.createElement("div");
     newCell.classList.add("table-cell");
     newCell.setAttribute("data-prop", `${prop}`);
     if (rowsCounter === 0) {
-      //?case of fiert row
-      if (cellCounter === 0) {
-        newCell.textContent = "";
-      } else if (cellCounter === 8) {
-        newCell.textContent = `${prop}`;
-      } else {
-        newCell.textContent = `${prop}`;
-      }
+      //case of first row
+      newCell.textContent = `${prop}`;
     } else {
       row.classList.add(`id${member.id}`);
       if (cellCounter === 8) {
@@ -216,17 +211,15 @@ function addInputEvents() {
   const searchBar = document.getElementById("search-input");
   searchCategory.addEventListener("change", setSearchTerm);
   searchBar.addEventListener("input", searchForMatches);
-  enterBtn.addEventListener("click", something);
+  enterBtn.addEventListener("click", enterClass);
 }
-function something() {
-  console.log("enter");
+function enterClass() {
   landingPage.classList.add("hidden");
   theClass.classList.remove("hidden");
 }
 
 function handleBackSpace(e) {
   if (e.key === "Backspace") {
-    console.log("p");
     if (app.curSearchValue == "") {
       const allStudents = table.children;
       for (row of allStudents) {
@@ -299,7 +292,7 @@ async function displayData() {
   }
 }
 
-//! -------------------wheather api functions -------------------
+//! -------------------wheather functions -------------------
 
 async function getCityCoordinates(cityName) {
   try {
@@ -353,7 +346,7 @@ async function popWeather(weather, location) {
     console.log(weather);
     const weatherWindow = document.createElement("div");
     weatherWindow.classList.add("weather-window");
-    weatherWindow.innerHTML = `Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
+    weatherWindow.innerHTML = `&#9728; &#9729; <br> Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
     location.before(weatherWindow);
     setTimeout(() => {
       console.log("timput");
