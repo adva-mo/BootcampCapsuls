@@ -183,9 +183,8 @@ function editStudent(e) {
   const rowCells = e.path[2].children;
   if (!app.editMood) {
     app.editMood = true;
-    console.log("clicked on edit");
     for (let i = 0; i < rowCells.length; i++) {
-      console.log(rowCells[i]);
+      // console.log(rowCells[i]);
       if (i == 0 || i == 6 || i == 8) {
         rowCells[i].contentEditable = "false";
       } else {
@@ -334,7 +333,6 @@ async function displayCityWeather(cityName, location) {
       }
     }
     const currentWeather = await getCityCoordinates(city);
-    console.log(currentWeather);
     await popWeather(currentWeather, location);
   } catch {
     console.log("error ");
@@ -343,13 +341,11 @@ async function displayCityWeather(cityName, location) {
 
 async function popWeather(weather, location) {
   try {
-    console.log(weather);
     const weatherWindow = document.createElement("div");
     weatherWindow.classList.add("weather-window");
     weatherWindow.innerHTML = `&#9728; &#9729; <br> Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
     location.before(weatherWindow);
     setTimeout(() => {
-      console.log("timput");
       weatherWindow.remove();
     }, 3000);
   } catch {
