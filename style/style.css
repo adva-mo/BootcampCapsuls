@@ -23,6 +23,9 @@ body {
   width: 95vw;
   overflow: hidden;
 }
+header {
+  padding: 1rem 0;
+}
 .form-container {
   background-color: rgba(250, 181, 42, 0.685);
   padding: 0;

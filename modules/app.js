@@ -108,24 +108,24 @@ function createRow(member) {
 }
 
 //? TODO test function:
-function createTableHeader() {
-  var cellCounter = 0;
-  const row = document.createElement("div");
-  row.classList.add("table-row");
-  for (let prop of app.tablePropeties) {
-    let newCell = document.createElement("div");
-    newCell.classList.add("table-cell");
-    if (cellCounter === 0) {
-      newCell.textContent = "";
-    } else if (cellCounter === 9) {
-      newCell.textContent = `${prop}`;
-    } else {
-      newCell.textContent = `${prop}`;
-    }
-    cellCounter++;
-    table.appendChild(row);
-  }
-}
+// function createTableHeader() {
+//   var cellCounter = 0;
+//   const row = document.createElement("div");
+//   row.classList.add("table-row");
+//   for (let prop of app.tablePropeties) {
+//     let newCell = document.createElement("div");
+//     newCell.classList.add("table-cell");
+//     if (cellCounter === 0) {
+//       newCell.textContent = "";
+//     } else if (cellCounter === 9) {
+//       newCell.textContent = `${prop}`;
+//     } else {
+//       newCell.textContent = `${prop}`;
+//     }
+//     cellCounter++;
+//     table.appendChild(row);
+//   }
+// }
 
 function displayRow(row, rowsCounter, member) {
   let cellCounter = 0;
@@ -145,6 +145,7 @@ function displayRow(row, rowsCounter, member) {
     } else {
       row.classList.add(`id${member.id}`);
       if (cellCounter === 9) {
+        newCell.classList.add("buttons-container");
         insertEditButtons(newCell);
       } else {
         if (cellCounter === 6) {
@@ -170,18 +171,6 @@ function insertEditButtons(cell) {
 }
 
 //! -------------------event listeners functions------------------
-
-async function popWeather(weather) {
-  try {
-    console.log(weather);
-    const weatherWindow = document.createElement("div");
-    weatherWindow.classList.add("weather-window");
-    weatherWindow.innerHTML = `Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
-    table.append(weatherWindow);
-  } catch {
-    console.log("e");
-  }
-}
 
 function addEventsToButtons() {
   document.addEventListener("click", handleClickEvents);
@@ -215,6 +204,8 @@ function deleteStudent(e) {
 }
 
 function editStudent(e) {
+  e.target.classList.add("edit");
+  e.target.innerHTML = "&check;";
   const rowCells = e.path[2].children;
   if (!app.editMood) {
     app.editMood = true;
@@ -231,6 +222,9 @@ function editStudent(e) {
     for (let i = 0; i < rowCells.length; i++) {
       rowCells[i].contentEditable = "false";
     }
+    e.target.classList.remove("edit");
+    e.target.innerHTML = "&#9998;";
+
     app.editMood = false;
     console.log("saved");
   }
@@ -293,7 +287,7 @@ displayApp();
 displayData();
 
 function displayApp() {
-  createTableHeader();
+  // createTableHeader();
   createRow();
   addInputEvents();
 }

@@ -12,6 +12,7 @@
   --weather-blue: #7aa7d2;
   --weather-light-blue: #a8c9ea;
   --weather-text: #dce0eb;
+  --red: #97010ed7;
 
   color: var(--davys-grey);
   font-size: 0.95rem;
@@ -46,16 +47,16 @@
   text-align: center;
 }
 button {
-  width: 1.5rem;
-  height: 1.5rem;
   border-radius: 50%;
   border: var(--gray-web) solid 0.5px;
   flex-grow: 1;
 }
 .delete-btn {
-  background-color: var(--primary-color);
+  background-color: var(--red);
+  color: var(--nice-w);
 }
 .edit-btn {
+  font-size: larger;
   background-color: var(--olive);
 }
 .hidden {
@@ -77,4 +78,12 @@ select {
 .select {
   border-radius: 0 10px 10px 0;
   padding: 0.3rem 0.3rem;
+}
+.buttons-container {
+  display: flex;
+  padding: 0.2rem;
+  gap: 0.2rem;
+}
+.edit {
+  background-color: rgba(121, 139, 64, 0.591);
 }

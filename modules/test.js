@@ -21,6 +21,30 @@ const app = {
 var rowsCounter = 0;
 const table = document.querySelector(".table-container");
 
+const cityInEnglish = {
+  netanya: "נתניה",
+  aramsha: "עראמשה",
+  "kiryat%shemona": "קרית שמונה",
+  netanya: "נתניה",
+  kseifa: "כסיפה",
+  "Ein%Qiniyye": "עין קנייא",
+  Tiberias: "טבריה",
+  Hurfeish: "חורפש",
+  ashdod: "אשדוד",
+  netivot: "נתיבות",
+  Beersheba: "באר שבע",
+  Kedumim: "קדומים",
+  jerusalem: "ירושלים",
+  karmiel: "כרמיאל",
+  "Rishon%LeZion": "ראשון לציון",
+  "Peki'in": "פקיעין",
+  Julis: "ג'וליס",
+  "Petah%Tikva": "פתח תקווה",
+  ako: "עכו",
+  "Kafr%Qara": "כפר קרע",
+  hedera: "חדרה",
+};
+
 //! -------------------aSync functions------------------
 
 async function fetchData(url) {
@@ -29,44 +53,35 @@ async function fetchData(url) {
     const data = await response.json();
     return data;
   } catch (e) {
-    console.log(e);
+    console.log("error");
   }
 }
 
 async function getAllGroupMembers() {
   try {
-    const group1 = fetchData("https://capsules7.herokuapp.com/api/group/one");
-    const group2 = fetchData("https://capsules7.herokuapp.com/api/group/two");
-    const myPromises = [group1, group2];
-    const data = await Promise.all(myPromises);
+    let group1 = await fetchData(
+      "https://capsules7.herokuapp.com/api/group/one"
+    );
+    let group2 = await fetchData(
+      "https://capsules7.herokuapp.com/api/group/two"
+    );
+    // console.log(group1, group2);
+    const mergedArr = group1.concat(group2);
+    mergedArr.sort((a, b) => a.id - b.id);
+    // console.log(mergedArr);
+    let people = [];
+    for (let i = 0; i < mergedArr.length; i++) {
+      const person = fetchData(
+        `https://capsules7.herokuapp.com/api/user/${mergedArr[i].id}`
+      );
+      people.push(person);
+    }
+    const data = await Promise.all(people);
     // console.log(data);
-    // const DATAid
-    const results = await transformData(data);
-    await addGitData(results);
-    // console.log("got all group members", results);
-    return results;
+    app.appData = [...data];
+    return data;
   } catch {
     console.log("group members are not available");
-  }
-}
-
-async function transformData(data) {
-  try {
-    const members = [...data[0], ...data[1]];
-    const myPromises = [];
-    for (let member of members) {
-      const ID = member.id;
-      const fullMember = fetchData(
-        `https://capsules7.herokuapp.com/api/user/${ID}`
-      );
-      myPromises.push(fullMember);
-    }
-    const results = await Promise.all(myPromises);
-    // console.log(results);
-    app.appData = [...results];
-    return results;
-  } catch {
-    console.log("error transform data func");
   }
 }
 
@@ -93,24 +108,24 @@ function createRow(member) {
 }
 
 //? TODO test function:
-function createTableHeader() {
-  var cellCounter = 0;
-  const row = document.createElement("div");
-  row.classList.add("table-row");
-  for (let prop of app.tablePropeties) {
-    let newCell = document.createElement("div");
-    newCell.classList.add("table-cell");
-    if (cellCounter === 0) {
-      newCell.textContent = "";
-    } else if (cellCounter === 9) {
-      newCell.textContent = `${prop}`;
-    } else {
-      newCell.textContent = `${prop}`;
-    }
-    cellCounter++;
-    table.appendChild(row);
-  }
-}
+// function createTableHeader() {
+//   var cellCounter = 0;
+//   const row = document.createElement("div");
+//   row.classList.add("table-row");
+//   for (let prop of app.tablePropeties) {
+//     let newCell = document.createElement("div");
+//     newCell.classList.add("table-cell");
+//     if (cellCounter === 0) {
+//       newCell.textContent = "";
+//     } else if (cellCounter === 9) {
+//       newCell.textContent = `${prop}`;
+//     } else {
+//       newCell.textContent = `${prop}`;
+//     }
+//     cellCounter++;
+//     table.appendChild(row);
+//   }
+// }
 
 function displayRow(row, rowsCounter, member) {
   let cellCounter = 0;
@@ -130,8 +145,12 @@ function displayRow(row, rowsCounter, member) {
     } else {
       row.classList.add(`id${member.id}`);
       if (cellCounter === 9) {
+        newCell.classList.add("buttons-container");
         insertEditButtons(newCell);
       } else {
+        if (cellCounter === 6) {
+          newCell.classList.add(`${prop}`);
+        }
         newCell.textContent = member[prop];
       }
     }
@@ -153,17 +172,38 @@ function insertEditButtons(cell) {
 
 //! -------------------event listeners functions------------------
 
+async function popWeather(weather) {
+  try {
+    console.log(weather);
+    const weatherWindow = document.createElement("div");
+    weatherWindow.classList.add("weather-window");
+    weatherWindow.innerHTML = `Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
+    table.append(weatherWindow);
+  } catch {
+    console.log("e");
+  }
+}
+
 function addEventsToButtons() {
-  document.body.addEventListener("click", (e) => console.log(e.target));
+  document.addEventListener("click", handleClickEvents);
   const deleteButtons = document.querySelectorAll(".delete-btn");
   const editButtons = document.querySelectorAll(".edit-btn");
-
   deleteButtons.forEach((b) => {
     b.addEventListener("click", deleteStudent);
   });
   editButtons.forEach((b) => {
     b.addEventListener("click", editStudent);
   });
+}
+
+function handleClickEvents(e) {
+  if (e.target.classList.contains("city")) {
+    const city = e.srcElement.innerHTML;
+    const location = e.target;
+    displayCityWeather(city, location);
+    console.log(e.srcElement.innerHTML);
+    console.log(e.target);
+  }
 }
 
 function deleteStudent(e) {
@@ -248,31 +288,13 @@ function searchForMatches(e) {
 
 //! -------------------tests------------------
 
-// async function displayAvatars() {
-//   // { 011: "adva-mo", 012: "adva-mo", 013: "adva-mo" }
-//   try {
-//     const myPromises = [];
-//     for (prop in app.gitUsers) {
-//       const avatar = fetchData(
-//         `https://api.github.com/users/${app.gitUsers[prop]}`
-//       );
-//       myPromises.push(avatar);
-//     }
-//     const arrOfavatar = await Promise.all(myPromises);
-//     for (val of)
-//     console.log(arrOfavatar);
-//   } catch {
-//     console.log("eroor");
-//   }
-// }
-
 //! -------------------APP starts here!------------------
 
 displayApp();
 displayData();
 
 function displayApp() {
-  createTableHeader();
+  // createTableHeader();
   createRow();
   addInputEvents();
 }
@@ -288,6 +310,7 @@ async function displayData() {
     console.log("error");
   }
   addEventsToButtons();
+  // addHoverEvents()
   console.log("APP UPLOADED SUCCESFULLY");
 }
 
@@ -300,13 +323,14 @@ async function getCityCoordinates(cityName) {
     );
     const lat = cityData[0].lat.toFixed(2);
     const lon = cityData[0].lon.toFixed(2);
-    await getCityWeather(lat, lon);
+    const coors = await fetchWeather(lat, lon);
+    return coors;
   } catch {
     console.log("e");
   }
 }
 
-async function getCityWeather(lat, lon) {
+async function fetchWeather(lat, lon) {
   try {
     const res = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${app.wheatherApiKey}`
@@ -315,12 +339,45 @@ async function getCityWeather(lat, lon) {
       return;
     }
     const cityWeather = await res.json();
-    console.log(cityWeather.main);
+    const tempNow = cityWeather.main.temp;
+    const tempFeelsLike = cityWeather.main.feels_like;
+    let weatherData = { now: tempNow, feels: tempFeelsLike };
+    return weatherData;
   } catch {
     console.log("e");
   }
 }
-// getCityCoordinates("jerusalem");
+async function displayCityWeather(cityName, location) {
+  try {
+    let city;
+    for (prop in cityInEnglish) {
+      if (cityInEnglish[prop] == cityName) {
+        city = prop;
+      }
+    }
+    const currentWeather = await getCityCoordinates(city);
+    console.log(currentWeather);
+    await popWeather(currentWeather, location);
+  } catch {
+    console.log("error ");
+  }
+}
+
+async function popWeather(weather, location) {
+  try {
+    console.log(weather);
+    const weatherWindow = document.createElement("div");
+    weatherWindow.classList.add("weather-window");
+    weatherWindow.innerHTML = `Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
+    location.before(weatherWindow);
+    setTimeout(() => {
+      console.log("timput");
+      weatherWindow.remove();
+    }, 3000);
+  } catch {
+    console.log("e");
+  }
+}
 
 //! -------------------local storage functuons -  tested !-------------------
 //? TODO
