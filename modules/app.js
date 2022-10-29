@@ -100,7 +100,14 @@ function displayRow(row, rowsCounter, member) {
     newCell.classList.add("table-cell");
     newCell.setAttribute("data-prop", `${prop}`);
     if (rowsCounter === 0) {
-      newCell.textContent = `${prop}`;
+      //?case of fiert row
+      if (cellCounter === 0) {
+        newCell.textContent = "";
+      } else if (cellCounter === 8) {
+        newCell.textContent = `${prop}`;
+      } else {
+        newCell.textContent = `${prop}`;
+      }
     } else {
       row.classList.add(`id${member.id}`);
       if (cellCounter === 8) {
@@ -180,7 +187,7 @@ function editStudent(e) {
     console.log("clicked on edit");
     for (let i = 0; i < rowCells.length; i++) {
       console.log(rowCells[i]);
-      if (i == 0 || i == 1 || i == 9 || i == 7) {
+      if (i == 0 || i == 6 || i == 8) {
         rowCells[i].contentEditable = "false";
       } else {
         rowCells[i].contentEditable = "true";
@@ -200,27 +207,26 @@ function editStudent(e) {
 //! -------------------seraching student functions------------------
 
 function addInputEvents() {
+  document.addEventListener("keydown", handleBackSpace);
   const searchCategory = document.querySelector("select");
   const searchBar = document.getElementById("search-input");
-
   searchCategory.addEventListener("change", setSearchTerm);
   searchBar.addEventListener("input", searchForMatches);
-  searchBar.addEventListener("focusin", () => {});
-  searchBar.addEventListener("focusout", displayAllStudents);
 }
 
-function setSearchTerm(e) {
-  app.curSearchTerm = e.target.value;
-}
-
-function displayAllStudents(e) {
-  console.log("jd");
-  if (app.curSearchValue == "") {
-    const allStudents = table.children;
-    for (row of allStudents) {
-      row.classList.remove("hidden");
+function handleBackSpace(e) {
+  if (e.key === "Backspace") {
+    console.log("p");
+    if (app.curSearchValue == "") {
+      const allStudents = table.children;
+      for (row of allStudents) {
+        row.classList.remove("hidden");
+      }
     }
   }
+}
+function setSearchTerm(e) {
+  app.curSearchTerm = e.target.value;
 }
 
 function removeUnMatched(unMatches, matches) {
@@ -264,7 +270,6 @@ function searchForMatches(e) {
 isLocalStorageAvailable();
 displayApp();
 displayData();
-addEventsToButtons();
 console.log("APP UPLOADED SUCCESFULLY");
 
 function displayApp() {
@@ -277,6 +282,7 @@ async function displayData() {
     const classObj = await getAllGroupMembers();
     classObj.forEach((member) => {
       createRow(member);
+      addEventsToButtons();
     });
   } catch {
     console.log("error");

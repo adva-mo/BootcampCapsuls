@@ -48,12 +48,16 @@ header {
   background-color: var(--weather-blue);
   color: var(--weather-text);
   font-weight: 500;
-  position: sticky;
-  top: 0;
-  /* z-index: 1; */
+  position: absolute;
+  right: 20%;
+  top: -50%;
+  /* left: 40%; */
+  /* overflow: visible; */
+  z-index: 1;
   padding: 0.5rem;
   /* transform: translate(300%, -90%); */
   /* box-shadow: var(--weather-light-blue) 1px; */
+  transition: all 1s ease-in;
 }
 .city:hover {
   text-decoration: underline;

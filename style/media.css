@@ -1,0 +1,9 @@
+@media (max-width: 500px) {
+  .table-container div {
+    font-size: 0.7rem;
+  }
+  /* button {
+    width: 1rem;
+    height: 1rem;
+  } */
+}

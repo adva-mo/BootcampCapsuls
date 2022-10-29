@@ -36,6 +36,7 @@
 .table-row {
   width: 100%;
   display: flex;
+  position: relative;
 }
 .table-cell {
   background-color: var(--nice-w);
