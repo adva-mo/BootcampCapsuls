@@ -17,8 +17,12 @@ const app = {
   curSearchValue: null,
   editMood: false,
 };
+const landingPage = document.querySelector(".landing-page");
+const theClass = document.querySelector(".the-class");
 const table = document.querySelector(".table-container");
 const searchForm = document.querySelector("form-container");
+const enterBtn = document.querySelector("#enter-class");
+
 var rowsCounter = 0;
 var searchCounter = 0;
 
@@ -212,6 +216,12 @@ function addInputEvents() {
   const searchBar = document.getElementById("search-input");
   searchCategory.addEventListener("change", setSearchTerm);
   searchBar.addEventListener("input", searchForMatches);
+  enterBtn.addEventListener("click", something);
+}
+function something() {
+  console.log("enter");
+  landingPage.classList.add("hidden");
+  theClass.classList.remove("hidden");
 }
 
 function handleBackSpace(e) {

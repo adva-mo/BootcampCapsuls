@@ -1,26 +1,32 @@
 body {
   width: 100vw;
-  padding-top: 2rem;
+  padding: 2rem 4rem;
   background: url(/photos/beer-bg.jpeg);
   height: 100%;
   font-family: "Dosis", sans-serif;
 }
 .landing-page {
-  background-color: aquamarine;
+  background-color: rgba(75, 74, 74, 0.687);
   width: 90vw;
-  height: 90vh;
-  display: none;
+  /* height: 90vh; */
   border-radius: 20px;
+  /* outline: var(--olive) solid 5px; */
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 3rem;
 }
 .main-container {
   border-radius: 20px;
   height: 120%;
+  margin: 2rem 2rem;
 }
 .the-class {
+  /* display: none; */
   height: 120%;
   border-radius: 20px;
   background-color: var(--nice-w);
-  width: 95vw;
+  width: 85vw;
   overflow: hidden;
 }
 header {
@@ -28,7 +34,7 @@ header {
 }
 .form-container {
   background-color: rgba(250, 181, 42, 0.685);
-  padding: 0;
+  /* padding: 0 1rem; */
   margin: 0.3rem 0.3rem;
   border-radius: 10px;
 }
@@ -51,12 +57,8 @@ header {
   position: absolute;
   right: 20%;
   top: -50%;
-  /* left: 40%; */
-  /* overflow: visible; */
   z-index: 1;
   padding: 0.5rem;
-  /* transform: translate(300%, -90%); */
-  /* box-shadow: var(--weather-light-blue) 1px; */
   transition: all 1s ease-in;
 }
 .city:hover {
@@ -64,4 +66,20 @@ header {
 }
 h1 {
   padding: 0 0.5rem;
+}
+.landing-page h1 {
+  color: var(--nice-w);
+  font-size: 4rem;
+  /* text-align: center; */
+}
+.landing-page button {
+  width: 6rem;
+  height: 4rem;
+  background-color: var(--olive);
+  color: var(--primary-color);
+  font-family: "Dosis", sans-serif;
+  padding: 0;
+  font-size: x-large;
+  padding-bottom: 0.3rem;
+  margin-top: 2rem;
 }

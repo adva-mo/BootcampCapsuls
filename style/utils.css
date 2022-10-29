@@ -25,6 +25,9 @@
 .flex-column {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 .search {
   width: 8rem;
