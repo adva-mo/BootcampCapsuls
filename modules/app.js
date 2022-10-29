@@ -2,9 +2,7 @@ const app = {
   appData: null,
   wheatherApiKey: "72f1e697d6e7311ea64d8c29f3c8330f",
   localStorageAvailable: false,
-  gitUsers: { adva: "adva-mo", adva: "adva-mo", adva: "adva-mo" },
   tablePropeties: [
-    "gitStudentName",
     "id",
     "firstName",
     "lastName",
@@ -16,10 +14,13 @@ const app = {
     "",
   ],
   curSearchTerm: "firstName",
+  curSearchValue: null,
   editMood: false,
 };
-var rowsCounter = 0;
 const table = document.querySelector(".table-container");
+const searchForm = document.querySelector("form-container");
+var rowsCounter = 0;
+var searchCounter = 0;
 
 const cityInEnglish = {
   netanya: "נתניה",
@@ -65,10 +66,8 @@ async function getAllGroupMembers() {
     let group2 = await fetchData(
       "https://capsules7.herokuapp.com/api/group/two"
     );
-    // console.log(group1, group2);
     const mergedArr = group1.concat(group2);
     mergedArr.sort((a, b) => a.id - b.id);
-    // console.log(mergedArr);
     let people = [];
     for (let i = 0; i < mergedArr.length; i++) {
       const person = fetchData(
@@ -77,7 +76,6 @@ async function getAllGroupMembers() {
       people.push(person);
     }
     const data = await Promise.all(people);
-    // console.log(data);
     app.appData = [...data];
     return data;
   } catch {
@@ -85,18 +83,6 @@ async function getAllGroupMembers() {
   }
 }
 
-async function addGitData(results) {
-  try {
-    const res = results;
-    return results.map((e) => {
-      e.gitStudentName = "1";
-      e.id = `${e.id}`;
-      // console.log(e.gitStudentName);
-    });
-  } catch {
-    console.log("eroor in github function");
-  }
-}
 //! -------------------draw table functions------------------
 
 function createRow(member) {
@@ -107,26 +93,6 @@ function createRow(member) {
   rowsCounter++;
 }
 
-//? TODO test function:
-// function createTableHeader() {
-//   var cellCounter = 0;
-//   const row = document.createElement("div");
-//   row.classList.add("table-row");
-//   for (let prop of app.tablePropeties) {
-//     let newCell = document.createElement("div");
-//     newCell.classList.add("table-cell");
-//     if (cellCounter === 0) {
-//       newCell.textContent = "";
-//     } else if (cellCounter === 9) {
-//       newCell.textContent = `${prop}`;
-//     } else {
-//       newCell.textContent = `${prop}`;
-//     }
-//     cellCounter++;
-//     table.appendChild(row);
-//   }
-// }
-
 function displayRow(row, rowsCounter, member) {
   let cellCounter = 0;
   for (let prop of app.tablePropeties) {
@@ -134,21 +100,14 @@ function displayRow(row, rowsCounter, member) {
     newCell.classList.add("table-cell");
     newCell.setAttribute("data-prop", `${prop}`);
     if (rowsCounter === 0) {
-      //?case of fiert row
-      if (cellCounter === 0) {
-        newCell.textContent = "";
-      } else if (cellCounter === 9) {
-        newCell.textContent = `${prop}`;
-      } else {
-        newCell.textContent = `${prop}`;
-      }
+      newCell.textContent = `${prop}`;
     } else {
       row.classList.add(`id${member.id}`);
-      if (cellCounter === 9) {
+      if (cellCounter === 8) {
         newCell.classList.add("buttons-container");
         insertEditButtons(newCell);
       } else {
-        if (cellCounter === 6) {
+        if (cellCounter === 5) {
           newCell.classList.add(`${prop}`);
         }
         newCell.textContent = member[prop];
@@ -170,12 +129,15 @@ function insertEditButtons(cell) {
   cell.appendChild(deleteStudent);
 }
 
-//! -------------------event listeners functions------------------
+//! -------------------EVENTS functions------------------
 
 function addEventsToButtons() {
-  document.addEventListener("click", handleClickEvents);
   const deleteButtons = document.querySelectorAll(".delete-btn");
   const editButtons = document.querySelectorAll(".edit-btn");
+
+  document.addEventListener("click", handleClickEvents);
+  document.addEventListener("keydown", handleEnterEvents);
+
   deleteButtons.forEach((b) => {
     b.addEventListener("click", deleteStudent);
   });
@@ -184,15 +146,21 @@ function addEventsToButtons() {
   });
 }
 
+function handleEnterEvents(e) {
+  if (e.key == "Enter") {
+    e.preventDefault();
+  }
+}
+
 function handleClickEvents(e) {
   if (e.target.classList.contains("city")) {
     const city = e.srcElement.innerHTML;
     const location = e.target;
     displayCityWeather(city, location);
-    console.log(e.srcElement.innerHTML);
-    console.log(e.target);
   }
 }
+
+//! -------------------delete and edit functions------------------
 
 function deleteStudent(e) {
   const studentToRemove = e.path[2];
@@ -224,31 +192,35 @@ function editStudent(e) {
     }
     e.target.classList.remove("edit");
     e.target.innerHTML = "&#9998;";
-
     app.editMood = false;
     console.log("saved");
   }
 }
-//! -------------------seraching functions------------------
+
+//! -------------------seraching student functions------------------
 
 function addInputEvents() {
   const searchCategory = document.querySelector("select");
-  searchCategory.addEventListener("change", setSearchTerm);
   const searchBar = document.getElementById("search-input");
+
+  searchCategory.addEventListener("change", setSearchTerm);
   searchBar.addEventListener("input", searchForMatches);
   searchBar.addEventListener("focusin", () => {});
   searchBar.addEventListener("focusout", displayAllStudents);
 }
-function displayAllStudents(e) {
-  e.target.value = "";
-  const allStudents = table.children;
-  for (row of allStudents) {
-    row.classList.remove("hidden");
-  }
-}
 
 function setSearchTerm(e) {
   app.curSearchTerm = e.target.value;
+}
+
+function displayAllStudents(e) {
+  console.log("jd");
+  if (app.curSearchValue == "") {
+    const allStudents = table.children;
+    for (row of allStudents) {
+      row.classList.remove("hidden");
+    }
+  }
 }
 
 function removeUnMatched(unMatches, matches) {
@@ -263,7 +235,15 @@ function removeUnMatched(unMatches, matches) {
 }
 
 function searchForMatches(e) {
-  console.log(e.target.value);
+  app.curSearchValue = e.target.value;
+  if (searchCounter > 0) {
+    if ((app.curSearchValue = "")) {
+      const allStudents = table.children;
+      for (row of allStudents) {
+        row.classList.remove("hidden");
+      }
+    }
+  }
   var unMatches = [];
   var matches = [];
   for (let i = 0; i < app.appData.length; i++) {
@@ -277,17 +257,17 @@ function searchForMatches(e) {
     }
   }
   removeUnMatched(unMatches, matches);
+  searchCounter++;
 }
 
-//! -------------------tests------------------
-
 //! -------------------APP starts here!------------------
-
+isLocalStorageAvailable();
 displayApp();
 displayData();
+addEventsToButtons();
+console.log("APP UPLOADED SUCCESFULLY");
 
 function displayApp() {
-  // createTableHeader();
   createRow();
   addInputEvents();
 }
@@ -295,19 +275,15 @@ function displayApp() {
 async function displayData() {
   try {
     const classObj = await getAllGroupMembers();
-    classObj.forEach((member, i) => {
+    classObj.forEach((member) => {
       createRow(member);
-      // here function thet retrieves avatars
     });
   } catch {
     console.log("error");
   }
-  addEventsToButtons();
-  // addHoverEvents()
-  console.log("APP UPLOADED SUCCESFULLY");
 }
 
-//! -------------------wheather api functions - tested !-------------------
+//! -------------------wheather api functions -------------------
 
 async function getCityCoordinates(cityName) {
   try {
@@ -373,65 +349,26 @@ async function popWeather(weather, location) {
 }
 
 //! -------------------local storage functuons -  tested !-------------------
-//? TODO
-//? add a function: addDataToLocalStorage(), will recieve an object, iterate it and store it to local storage
-//? before adding, make sure if the key is already exist, if not, creat a new key, if its is, update the key,
 
 // function that detects whether localStorage is both supported and available:
 function storageAvailable(type) {
   let storage;
   try {
     storage = window[type];
-    console.log(storage);
     const x = "__storage_test__";
     storage.setItem(x, x);
     storage.removeItem(x);
     return true;
   } catch (e) {
-    return (
-      e instanceof DOMException &&
-      // everything except Firefox
-      (e.code === 22 ||
-        // Firefox
-        e.code === 1014 ||
-        // test name field too, because code might not be present
-        // everything except Firefox
-        e.name === "QuotaExceededError" ||
-        // Firefox
-        e.name === "NS_ERROR_DOM_QUOTA_REACHED") &&
-      // acknowledge QuotaExceededError only if there's something already stored
-      storage &&
-      storage.length !== 0
-    );
+    console.log("e");
   }
 }
 
-//use of the function:
-function ifLocalStorageAvailable() {
+function isLocalStorageAvailable() {
   if (storageAvailable("localStorage")) {
     app.localStorageAvailable = true;
-    // Yippee! We can use localStorage awesomeness
+    console.log("local storage is available");
   } else {
-    console.log("item didnt add to local storage!!");
-    // Too bad, no localStorage for us
+    console.log("storage isnt available!!");
   }
 }
-//! -------------------avatar git hub functions ------------------
-
-// async function displayAvatars() {
-//   // { 011: "adva-mo", 012: "adva-mo", 013: "adva-mo" }
-//   try {
-//     const myPromises = [];
-//     for (prop in app.gitUsers) {
-//       const avatar = fetchData(
-//         `https://api.github.com/users/${app.gitUsers[prop]}`
-//       );
-//       myPromises.push(avatar);
-//     }
-//     const arrOfavatar = await Promise.all(myPromises);
-//     for (val of)
-//     console.log(arrOfavatar);
-//   } catch {
-//     console.log("eroor");
-//   }
-// }

@@ -2,11 +2,9 @@ const app = {
   appData: null,
   wheatherApiKey: "72f1e697d6e7311ea64d8c29f3c8330f",
   localStorageAvailable: false,
-  gitUsers: { adva: "adva-mo", adva: "adva-mo", adva: "adva-mo" },
   tablePropeties: [
-    "gitStudentName",
     "id",
-    "firstName",
+    "first name",
     "lastName",
     "capsule",
     "age",
@@ -16,10 +14,13 @@ const app = {
     "",
   ],
   curSearchTerm: "firstName",
+  curSearchValue: null,
   editMood: false,
 };
 var rowsCounter = 0;
+var searchCounter = 0;
 const table = document.querySelector(".table-container");
+const searchForm = document.querySelector("form-container");
 
 const cityInEnglish = {
   netanya: "נתניה",
@@ -67,6 +68,7 @@ async function getAllGroupMembers() {
     );
     // console.log(group1, group2);
     const mergedArr = group1.concat(group2);
+    console.log(mergedArr);
     mergedArr.sort((a, b) => a.id - b.id);
     // console.log(mergedArr);
     let people = [];
@@ -97,6 +99,7 @@ async function addGitData(results) {
     console.log("eroor in github function");
   }
 }
+
 //! -------------------draw table functions------------------
 
 function createRow(member) {
@@ -137,18 +140,18 @@ function displayRow(row, rowsCounter, member) {
       //?case of fiert row
       if (cellCounter === 0) {
         newCell.textContent = "";
-      } else if (cellCounter === 9) {
+      } else if (cellCounter === 8) {
         newCell.textContent = `${prop}`;
       } else {
         newCell.textContent = `${prop}`;
       }
     } else {
       row.classList.add(`id${member.id}`);
-      if (cellCounter === 9) {
+      if (cellCounter === 8) {
         newCell.classList.add("buttons-container");
         insertEditButtons(newCell);
       } else {
-        if (cellCounter === 6) {
+        if (cellCounter === 5) {
           newCell.classList.add(`${prop}`);
         }
         newCell.textContent = member[prop];
@@ -170,22 +173,13 @@ function insertEditButtons(cell) {
   cell.appendChild(deleteStudent);
 }
 
-//! -------------------event listeners functions------------------
-
-async function popWeather(weather) {
-  try {
-    console.log(weather);
-    const weatherWindow = document.createElement("div");
-    weatherWindow.classList.add("weather-window");
-    weatherWindow.innerHTML = `Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
-    table.append(weatherWindow);
-  } catch {
-    console.log("e");
-  }
-}
+//! -------------------delete and edit functions------------------
 
 function addEventsToButtons() {
   document.addEventListener("click", handleClickEvents);
+  document.addEventListener("keydown", handleEnterEvents);
+  // document.addEventListener("keydown", displayAllStudents);
+
   const deleteButtons = document.querySelectorAll(".delete-btn");
   const editButtons = document.querySelectorAll(".edit-btn");
   deleteButtons.forEach((b) => {
@@ -196,13 +190,21 @@ function addEventsToButtons() {
   });
 }
 
+function handleEnterEvents(e) {
+  //enter events
+  if (e.key == "Enter") {
+    console.log(e);
+    e.preventDefault();
+  }
+}
+
 function handleClickEvents(e) {
+  console.log(e.target);
   if (e.target.classList.contains("city")) {
     const city = e.srcElement.innerHTML;
     const location = e.target;
     displayCityWeather(city, location);
     console.log(e.srcElement.innerHTML);
-    console.log(e.target);
   }
 }
 
@@ -216,6 +218,8 @@ function deleteStudent(e) {
 }
 
 function editStudent(e) {
+  e.target.classList.add("edit");
+  e.target.innerHTML = "&check;";
   const rowCells = e.path[2].children;
   if (!app.editMood) {
     app.editMood = true;
@@ -232,25 +236,32 @@ function editStudent(e) {
     for (let i = 0; i < rowCells.length; i++) {
       rowCells[i].contentEditable = "false";
     }
+    e.target.classList.remove("edit");
+    e.target.innerHTML = "&#9998;";
+
     app.editMood = false;
     console.log("saved");
   }
 }
-//! -------------------seraching functions------------------
+
+//! -------------------seraching student functions------------------
 
 function addInputEvents() {
   const searchCategory = document.querySelector("select");
   searchCategory.addEventListener("change", setSearchTerm);
   const searchBar = document.getElementById("search-input");
   searchBar.addEventListener("input", searchForMatches);
+
   searchBar.addEventListener("focusin", () => {});
   searchBar.addEventListener("focusout", displayAllStudents);
 }
 function displayAllStudents(e) {
-  e.target.value = "";
-  const allStudents = table.children;
-  for (row of allStudents) {
-    row.classList.remove("hidden");
+  console.log("jd");
+  if (app.curSearchValue == "") {
+    const allStudents = table.children;
+    for (row of allStudents) {
+      row.classList.remove("hidden");
+    }
   }
 }
 
@@ -270,7 +281,17 @@ function removeUnMatched(unMatches, matches) {
 }
 
 function searchForMatches(e) {
-  console.log(e.target.value);
+  // let counter = 0;
+  // console.log(counter);
+  app.curSearchValue = e.target.value;
+  if (searchCounter > 0) {
+    if ((app.curSearchValue = "")) {
+      const allStudents = table.children;
+      for (row of allStudents) {
+        row.classList.remove("hidden");
+      }
+    }
+  }
   var unMatches = [];
   var matches = [];
   for (let i = 0; i < app.appData.length; i++) {
@@ -284,6 +305,7 @@ function searchForMatches(e) {
     }
   }
   removeUnMatched(unMatches, matches);
+  searchCounter++;
 }
 
 //! -------------------tests------------------
