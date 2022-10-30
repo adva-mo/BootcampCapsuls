@@ -296,7 +296,7 @@ async function displayData() {
 async function getCityCoordinates(cityName) {
   try {
     const cityData = await fetchData(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=${app.wheatherApiKey}`
+      `HTTPS://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=5&appid=${app.wheatherApiKey}`
     );
     const lat = cityData[0].lat.toFixed(2);
     const lon = cityData[0].lon.toFixed(2);
@@ -310,12 +310,13 @@ async function getCityCoordinates(cityName) {
 async function fetchWeather(lat, lon) {
   try {
     const res = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${app.wheatherApiKey}`
+      `HTTPS://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${app.wheatherApiKey}`
     );
     if (!res.ok) {
       return;
     }
     const cityWeather = await res.json();
+    console.log(cityWeather);
     const tempNow = cityWeather.main.temp;
     const tempFeelsLike = cityWeather.main.feels_like;
     let weatherData = { now: tempNow, feels: tempFeelsLike };
@@ -343,7 +344,10 @@ async function popWeather(weather, location) {
   try {
     const weatherWindow = document.createElement("div");
     weatherWindow.classList.add("weather-window");
-    weatherWindow.innerHTML = `&#9728; &#9729; <br> Now: ${weather.now}&#8457; <br> Feels like: ${weather.feels}&#8457;`;
+    console.log("wethar now f:" + weather.now);
+    let nowC = ((273 - weather.now) * -1).toFixed(0);
+    let feelsF = ((273 - weather.feels) * -1).toFixed(0);
+    weatherWindow.innerHTML = `&#9728; &#9729; <br> Now: ${nowC}&#8451; <br> Feels like: ${feelsF}&#8451;`;
     location.before(weatherWindow);
     setTimeout(() => {
       weatherWindow.remove();
