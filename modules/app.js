@@ -141,9 +141,7 @@ function addEventsToButtons() {
   const deleteButtons = document.querySelectorAll(".delete-btn");
   const editButtons = document.querySelectorAll(".edit-btn");
 
-  document.addEventListener("click", handleClickEvents);
   document.addEventListener("keydown", handleEnterEvents);
-
   deleteButtons.forEach((b) => {
     b.addEventListener("click", deleteStudent);
   });
@@ -158,12 +156,14 @@ function handleEnterEvents(e) {
   }
 }
 
-function handleClickEvents(e) {
-  if (e.target.classList.contains("city")) {
-    const city = e.srcElement.innerHTML;
-    const location = e.target;
-    displayCityWeather(city, location);
-  }
+function addHoverEvents() {
+  console.log("hi");
+  const cityCells = document.querySelectorAll(".city");
+  cityCells.forEach((cell) => {
+    cell.addEventListener("mouseover", (e) => {
+      displayCityWeather(e.target.innerHTML, e.target);
+    });
+  });
 }
 
 //! -------------------delete and edit functions------------------
@@ -184,7 +184,6 @@ function editStudent(e) {
   if (!app.editMood) {
     app.editMood = true;
     for (let i = 0; i < rowCells.length; i++) {
-      // console.log(rowCells[i]);
       if (i == 0 || i == 6 || i == 8) {
         rowCells[i].contentEditable = "false";
       } else {
@@ -201,6 +200,8 @@ function editStudent(e) {
     console.log("saved");
   }
 }
+
+//! -------------------hover events------------------
 
 //! -------------------seraching student functions------------------
 
@@ -284,8 +285,9 @@ async function displayData() {
     const classObj = await getAllGroupMembers();
     classObj.forEach((member) => {
       createRow(member);
-      addEventsToButtons();
     });
+    addEventsToButtons();
+    addHoverEvents();
   } catch {
     console.log("error");
   }
