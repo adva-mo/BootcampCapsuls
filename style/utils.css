@@ -94,3 +94,6 @@ select {
 #invisible {
   z-index: -3;
 }
+.selected-row {
+  border: 2px var(--davys-grey) solid;
+}
