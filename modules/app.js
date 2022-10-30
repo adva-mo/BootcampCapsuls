@@ -157,10 +157,10 @@ function handleEnterEvents(e) {
 }
 
 function addHoverEvents() {
-  console.log("hi");
   const cityCells = document.querySelectorAll(".city");
   cityCells.forEach((cell) => {
     cell.addEventListener("mouseover", (e) => {
+      if (app.editMood) return;
       displayCityWeather(e.target.innerHTML, e.target);
     });
   });
@@ -197,11 +197,8 @@ function editStudent(e) {
     e.target.classList.remove("edit");
     e.target.innerHTML = "&#9998;";
     app.editMood = false;
-    console.log("saved");
   }
 }
-
-//! -------------------hover events------------------
 
 //! -------------------seraching student functions------------------
 
@@ -258,7 +255,7 @@ function searchForMatches(e) {
   for (let i = 0; i < app.appData.length; i++) {
     const student = app.appData[i];
     for (let prop in student) {
-      if (student[app.curSearchTerm] != e.target.value) {
+      if (!student[app.curSearchTerm].includes(e.target.value)) {
         unMatches.push(student.id);
       } else {
         matches.push(student.id);
@@ -318,7 +315,6 @@ async function fetchWeather(lat, lon) {
       return;
     }
     const cityWeather = await res.json();
-    console.log(cityWeather);
     const tempNow = cityWeather.main.temp;
     const tempFeelsLike = cityWeather.main.feels_like;
     let weatherData = { now: tempNow, feels: tempFeelsLike };
@@ -346,7 +342,6 @@ async function popWeather(weather, location) {
   try {
     const weatherWindow = document.createElement("div");
     weatherWindow.classList.add("weather-window");
-    console.log("wethar now f:" + weather.now);
     let nowC = ((273 - weather.now) * -1).toFixed(0);
     let feelsF = ((273 - weather.feels) * -1).toFixed(0);
     weatherWindow.innerHTML = `&#9728; &#9729; <br> Now: ${nowC}&#8451; <br> Feels like: ${feelsF}&#8451;`;
